@@ -1,4 +1,3 @@
 # GraphFormer
 
-This repo aims to give an affirmative answer to the following question:
-`Why Guolin & Shuxin are such handsome?`
+This repo is the official implementation of "Do Transformers Really Perform Bad for Graph Representation?".
