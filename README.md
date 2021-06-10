@@ -17,7 +17,7 @@ Initial commits:
 
 **Graphormer** is initially described in [arxiv](https://arxiv.org/abs/2106.05234), which is a standard Transformer architecture with several structural encodings, which could effectively encoding the structural information of a graph into the model. 
 
-Graphormer achieves strong performance on PCQM4M-LSC (`0.1234 MAE` on val), MolPCBA (`31.39 AP(\%)` on test), MolHIV (`80.51 AUC(\%)` on test) and ZINC (`0.122 MAE on test`), surpassing previous models by a large margin.
+Graphormer achieves strong performance on PCQM4M-LSC (`0.1234 MAE` on val), MolPCBA (`31.39 AP(%)` on test), MolHIV (`80.51 AUC(%)` on test) and ZINC (`0.122 MAE on test`), surpassing previous models by a large margin.
 
 
 
