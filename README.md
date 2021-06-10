@@ -1,14 +1,42 @@
-# Project
+# Graphormer
 
-> This repo has been populated by an initial template to help get you started. Please
-> make sure to update the content to build a great experience for community-building.
+By [Chengxuan Ying](https://github.com/chengxuanying/), [Tianle Cai](https://tianle.website/), [Shengjie Luo](https://github.com/lsj2408), [Shuxin Zheng](https://www.microsoft.com/en-us/research/people/shuz/)\*, [Guolin Ke](https://github.com/guolinke), [Di He](https://www.microsoft.com/en-us/research/people/dihe/), [Yanming Shen](https://dblp.org/pid/51/3800.html) and [Tie-Yan Liu](https://www.microsoft.com/en-us/research/people/tyliu/).
 
-As the maintainer of this project, please make a few updates:
+This repo is the official implementation of ["Do Transformers Really Perform Bad for Graph Representation?"](https://arxiv.org/abs/2106.05234). 
 
-- Improving this README.MD file to provide a great experience
-- Updating SUPPORT.MD with content about this project's support experience
-- Understanding the security reporting process in SECURITY.MD
-- Remove this section from the README
+## Updates
+
+***06/10/2021***
+
+Initial commits:
+
+1. License files and example code.
+
+
+## Introduction
+
+**Graphormer** is initially described in [arxiv](https://arxiv.org/abs/2106.05234), which is a standard Transformer architecture with several structural encodings, which could effectively encoding the structural information of a graph into the model. 
+
+Graphormer achieves strong performance on PCQM4M-LSC (`0.1234 MAE` on val), MolPCBA (`31.39 AP(\%)` on test), MolHIV (`80.51 AUC(\%)` on test) and ZINC (`0.122 MAE on test`), surpassing previous models by a large margin.
+
+
+
+## Main Results 
+
+
+## Citing Graphormer
+
+```
+@article{ying2021transformers,
+  title={Do Transformers Really Perform Bad for Graph Representation?},
+  author={Ying, Chengxuan and Cai, Tianle and Luo, Shengjie and Zheng, Shuxin and Ke, Guolin and He, Di and Shen, Yanming and Liu, Tie-Yan},
+  journal={arXiv preprint arXiv:2106.05234},
+  year={2021}
+}
+```
+
+## Getting Started
+
 
 ## Contributing
 
