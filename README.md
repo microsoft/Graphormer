@@ -1,6 +1,6 @@
 # Graphormer
 
-By [Chengxuan Ying](https://github.com/chengxuanying/), [Tianle Cai](https://tianle.website/), [Shengjie Luo](https://github.com/lsj2408), [Shuxin Zheng](https://www.microsoft.com/en-us/research/people/shuz/)\*, [Guolin Ke](https://github.com/guolinke), [Di He](https://www.microsoft.com/en-us/research/people/dihe/), [Yanming Shen](https://dblp.org/pid/51/3800.html) and [Tie-Yan Liu](https://www.microsoft.com/en-us/research/people/tyliu/).
+By [Chengxuan Ying](https://github.com/chengxuanying/), [Tianle Cai](https://tianle.website/), [Shengjie Luo](https://github.com/lsj2408), [Shuxin Zheng](https://www.microsoft.com/en-us/research/people/shuz/)\*, [Guolin Ke](https://github.com/guolinke), [Di He](https://www.microsoft.com/en-us/research/people/dihe/)\*, [Yanming Shen](https://dblp.org/pid/51/3800.html) and [Tie-Yan Liu](https://www.microsoft.com/en-us/research/people/tyliu/).
 
 This repo is the official implementation of ["Do Transformers Really Perform Bad for Graph Representation?"](https://arxiv.org/abs/2106.05234). 
 
