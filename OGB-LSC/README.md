@@ -71,7 +71,7 @@ bash train.sh
 
 ### Download Checkpoints
 
-Download ExpC* pretrained model from [here](https://szheng.blob.core.windows.net/ogb-lsc/expc_checkpoint_fold_0_7.tar.gz).
+Download ExpC* pretrained model from [here](https://szheng.blob.core.windows.net/ogb-lsc/expc_checkpoint_fold_0_7.zip).
 
 ### Inference on Test Molecules
 ```
