@@ -1,6 +1,6 @@
 
 
-## Reproduce Graphormer
+## Graphormer
 
 ### Setup with Conda
 ```
@@ -44,7 +44,7 @@ for val in $checkpoint_names; do
 done
 ```
 
-## Reproduce ExpC*
+## ExpC*
 
 ### Setup with Conda
 ```
