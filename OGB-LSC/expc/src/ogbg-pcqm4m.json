@@ -1,0 +1,21 @@
+{
+  "num_workers": 4,
+  "fold": 7,
+  "batch_size": 256,
+  "save_test_dir": "./pcqm4m_results/test_pred_dir",
+  "checkpoint_dir": "./pcqm4m_results/checkpoint_dir",
+  "epochs": 201,
+  "learning_rate": 0.0001,
+  "step_size": 20,
+  "decay_rate": 0.75,
+  "architecture": {
+    "layers": 5,
+    "hidden": 600,
+    "pooling": "S",
+    "JK": "S",
+    "exp_nonlinear": "GELU",
+    "dropout": 0,
+    "exp_n": 2,
+    "exp_bn": "Y"
+  }
+}

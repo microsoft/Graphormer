@@ -1,7 +1,4 @@
 
-## Download Checkpoints
-
-Download GraphFormer pretrained model from [here](https://szheng.blob.core.windows.net/ogb-lsc/graphformer_checkpoints.tar.gz).
 
 ## Reproduce Graphormer
 
@@ -31,13 +28,20 @@ export batch_size="256"
 bash train.sh
 ```
 
+### Download Checkpoints
+
+Download GraphFormer pretrained model from [here](https://szheng.blob.core.windows.net/ogb-lsc/graphformer_checkpoints.tar.gz).
+
 ### Inference on Test Molecules
 ```
 conda activate graphormer-lsc
 export arch="--ffn_dim 768 --hidden_dim 768 --attention_dropout_rate 0.1 --dropout_rate 0.1 --n_layers 12 --peak_lr 2e-4 --edge_type multi_hop --multi_hop_max_dist 20 --weight_decay 0.0 --intput_dropout_rate 0.0"
 export ckpt_path="checkpoints"
-export ckpt_name="all_0.ckpt"
-bash inference.sh
+checkpoint_names="all_fold_seed0 all_fold_seed1 fold0 fold1 fold2 fold3 fold4 fold5 fold6 fold7"
+for val in $checkpoint_names; do
+    export ckpt_name="$val.ckpt"
+    bash inference.sh
+done
 ```
 
 ## Reproduce ExpC*
@@ -52,12 +56,12 @@ conda install -c conda-forge easydict
 conda install -c conda-forge tensorboard
 conda install -c rdkit rdkit
 
-pip install torch-scatter -f https://pytorch-geometric.com/whl/torch-1.8.0+cu102.html
-pip install torch-sparse -f https://pytorch-geometric.com/whl/torch-1.8.0+cu102.html
-pip install torch-cluster -f https://pytorch-geometric.com/whl/torch-1.8.0+cu102.html
-pip install torch-spline-conv -f https://pytorch-geometric.com/whl/torch-1.8.0+cu102.html
-pip install torch-geometric
-pip install ogb
+pip install torch-scatter==2.0.7 -f https://pytorch-geometric.com/whl/torch-1.8.0+cu102.html
+pip install torch-sparse==0.6.9 -f https://pytorch-geometric.com/whl/torch-1.8.0+cu102.html
+pip install torch-cluster==1.5.9 -f https://pytorch-geometric.com/whl/torch-1.8.0+cu102.html
+pip install torch-spline-conv==1.2.1 -f https://pytorch-geometric.com/whl/torch-1.8.0+cu102.html
+pip install torch-geometric==1.6.3
+pip install ogb==1.3.1
 ```
 
 ### Prepare Dataset
