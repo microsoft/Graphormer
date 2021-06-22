@@ -9,7 +9,7 @@ from ogb.lsc.pcqm4m_pyg import PygPCQM4MDataset
 import pyximport
 pyximport.install(setup_args={'include_dirs': np.get_include()})
 import algos
-import pickle
+import joblib
 
 def convert_to_single_emb(x, offset=128):
     feature_num = x.size(1) if len(x.size()) > 1 else 1
@@ -58,7 +58,7 @@ def preprocess_item(item, noise=False):
 class MyPygPCQM4MDataset2(MyPygPCQM4MDataset):
     def __init__(self, root = 'dataset/mypcq_v4'):
         super().__init__(root=root)
-        self.all_rel_pos_3d = pickle.load(open('dataset/all_rel_pos_3d.pkl', 'rb'))
+        self.all_rel_pos_3d = joblib.load('dataset/all_rel_pos_3d.pkl')
 
     def download(self):
         super(MyPygPCQM4MDataset2, self).download()
