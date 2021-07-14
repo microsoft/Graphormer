@@ -119,7 +119,7 @@ class GraphFormer(pl.LightningModule):
 
     def forward(self, batched_data, perturb=None):
         attn_bias, rel_pos, x = batched_data.attn_bias, batched_data.rel_pos, batched_data.x
-        in_degree, out_degree = batched_data.in_degree, batched_data.in_degree
+        in_degree, out_degree = batched_data.in_degree, batched_data.out_degree
         edge_input, attn_edge_type = batched_data.edge_input, batched_data.attn_edge_type
         all_rel_pos_3d_1 = batched_data.all_rel_pos_3d_1
 
