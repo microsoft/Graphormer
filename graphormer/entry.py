@@ -38,7 +38,7 @@ def cli_main():
             args.checkpoint_path,
             strict=False,
             n_layers=args.n_layers,
-            head_size=args.head_size,
+            num_heads=args.num_heads,
             hidden_dim=args.hidden_dim,
             attention_dropout_rate=args.attention_dropout_rate,
             dropout_rate=args.dropout_rate,
@@ -59,7 +59,7 @@ def cli_main():
     else:
         model = Graphormer(
             n_layers=args.n_layers,
-            head_size=args.head_size,
+            num_heads=args.num_heads,
             hidden_dim=args.hidden_dim,
             attention_dropout_rate=args.attention_dropout_rate,
             dropout_rate=args.dropout_rate,

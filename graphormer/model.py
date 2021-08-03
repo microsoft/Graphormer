@@ -24,7 +24,7 @@ class Graphormer(pl.LightningModule):
     def __init__(
         self,
         n_layers,
-        head_size,
+        num_heads,
         hidden_dim,
         dropout_rate,
         intput_dropout_rate,
@@ -46,15 +46,15 @@ class Graphormer(pl.LightningModule):
         super().__init__()
         self.save_hyperparameters()
 
-        self.head_size = head_size
+        self.num_heads = num_heads
         if dataset_name == 'ZINC':
             self.atom_encoder = nn.Embedding(64, hidden_dim, padding_idx=0)
-            self.edge_encoder = nn.Embedding(64, head_size, padding_idx=0)
+            self.edge_encoder = nn.Embedding(64, num_heads, padding_idx=0)
             self.edge_type = edge_type
             if self.edge_type == 'multi_hop':
                 self.edge_dis_encoder = nn.Embedding(
-                    40 * head_size * head_size, 1)
-            self.rel_pos_encoder = nn.Embedding(40, head_size, padding_idx=0)
+                    40 * num_heads * num_heads, 1)
+            self.rel_pos_encoder = nn.Embedding(40, num_heads, padding_idx=0)
             self.in_degree_encoder = nn.Embedding(
                 64, hidden_dim, padding_idx=0)
             self.out_degree_encoder = nn.Embedding(
@@ -63,19 +63,19 @@ class Graphormer(pl.LightningModule):
             self.atom_encoder = nn.Embedding(
                 512 * 9 + 1, hidden_dim, padding_idx=0)
             self.edge_encoder = nn.Embedding(
-                512 * 3 + 1, head_size, padding_idx=0)
+                512 * 3 + 1, num_heads, padding_idx=0)
             self.edge_type = edge_type
             if self.edge_type == 'multi_hop':
                 self.edge_dis_encoder = nn.Embedding(
-                    128 * head_size * head_size, 1)
-            self.rel_pos_encoder = nn.Embedding(512, head_size, padding_idx=0)
+                    128 * num_heads * num_heads, 1)
+            self.rel_pos_encoder = nn.Embedding(512, num_heads, padding_idx=0)
             self.in_degree_encoder = nn.Embedding(
                 512, hidden_dim, padding_idx=0)
             self.out_degree_encoder = nn.Embedding(
                 512, hidden_dim, padding_idx=0)
 
         self.input_dropout = nn.Dropout(intput_dropout_rate)
-        encoders = [EncoderLayer(hidden_dim, ffn_dim, dropout_rate, attention_dropout_rate, head_size)
+        encoders = [EncoderLayer(hidden_dim, ffn_dim, dropout_rate, attention_dropout_rate, num_heads)
                     for _ in range(n_layers)]
         self.layers = nn.ModuleList(encoders)
         self.final_ln = nn.LayerNorm(hidden_dim)
@@ -87,7 +87,7 @@ class Graphormer(pl.LightningModule):
                 hidden_dim, get_dataset(dataset_name)['num_class'])
 
         self.graph_token = nn.Embedding(1, hidden_dim)
-        self.graph_token_virtual_distance = nn.Embedding(1, head_size)
+        self.graph_token_virtual_distance = nn.Embedding(1, num_heads)
 
         self.evaluator = get_dataset(dataset_name)['evaluator']
         self.metric = get_dataset(dataset_name)['metric']
@@ -117,7 +117,7 @@ class Graphormer(pl.LightningModule):
         n_graph, n_node = x.size()[:2]
         graph_attn_bias = attn_bias.clone()
         graph_attn_bias = graph_attn_bias.unsqueeze(1).repeat(
-            1, self.head_size, 1, 1)  # [n_graph, n_head, n_node+1, n_node+1]
+            1, self.num_heads, 1, 1)  # [n_graph, n_head, n_node+1, n_node+1]
 
         # rel pos
         # [n_graph, n_node, n_node, n_head] -> [n_graph, n_head, n_node, n_node]
@@ -125,7 +125,7 @@ class Graphormer(pl.LightningModule):
         graph_attn_bias[:, :, 1:, 1:] = graph_attn_bias[:,
                                                         :, 1:, 1:] + rel_pos_bias
         # reset rel pos here
-        t = self.graph_token_virtual_distance.weight.view(1, self.head_size, 1)
+        t = self.graph_token_virtual_distance.weight.view(1, self.num_heads, 1)
         graph_attn_bias[:, :, 1:, 0] = graph_attn_bias[:, :, 1:, 0] + t
         graph_attn_bias[:, :, 0, :] = graph_attn_bias[:, :, 0, :] + t
 
@@ -142,11 +142,11 @@ class Graphormer(pl.LightningModule):
             edge_input = self.edge_encoder(edge_input).mean(-2)
             max_dist = edge_input.size(-2)
             edge_input_flat = edge_input.permute(
-                3, 0, 1, 2, 4).reshape(max_dist, -1, self.head_size)
+                3, 0, 1, 2, 4).reshape(max_dist, -1, self.num_heads)
             edge_input_flat = torch.bmm(edge_input_flat, self.edge_dis_encoder.weight.reshape(
-                -1, self.head_size, self.head_size)[:max_dist, :, :])
+                -1, self.num_heads, self.num_heads)[:max_dist, :, :])
             edge_input = edge_input_flat.reshape(
-                max_dist, n_graph, n_node, n_node, self.head_size).permute(1, 2, 3, 0, 4)
+                max_dist, n_graph, n_node, n_node, self.num_heads).permute(1, 2, 3, 0, 4)
             edge_input = (edge_input.sum(-2) /
                           (rel_pos_.float().unsqueeze(-1))).permute(0, 3, 1, 2)
         else:
@@ -307,7 +307,7 @@ class Graphormer(pl.LightningModule):
     def add_model_specific_args(parent_parser):
         parser = parent_parser.add_argument_group("Graphormer")
         parser.add_argument('--n_layers', type=int, default=12)
-        parser.add_argument('--head_size', type=int, default=32)
+        parser.add_argument('--num_heads', type=int, default=32)
         parser.add_argument('--hidden_dim', type=int, default=512)
         parser.add_argument('--ffn_dim', type=int, default=512)
         parser.add_argument('--intput_dropout_rate', type=float, default=0.1)
@@ -346,20 +346,20 @@ class FeedForwardNetwork(nn.Module):
 
 
 class MultiHeadAttention(nn.Module):
-    def __init__(self, hidden_size, attention_dropout_rate, head_size):
+    def __init__(self, hidden_size, attention_dropout_rate, num_heads):
         super(MultiHeadAttention, self).__init__()
 
-        self.head_size = head_size
+        self.num_heads = num_heads
 
-        self.att_size = att_size = hidden_size // head_size
+        self.att_size = att_size = hidden_size // num_heads
         self.scale = att_size ** -0.5
 
-        self.linear_q = nn.Linear(hidden_size, head_size * att_size)
-        self.linear_k = nn.Linear(hidden_size, head_size * att_size)
-        self.linear_v = nn.Linear(hidden_size, head_size * att_size)
+        self.linear_q = nn.Linear(hidden_size, num_heads * att_size)
+        self.linear_k = nn.Linear(hidden_size, num_heads * att_size)
+        self.linear_v = nn.Linear(hidden_size, num_heads * att_size)
         self.att_dropout = nn.Dropout(attention_dropout_rate)
 
-        self.output_layer = nn.Linear(head_size * att_size, hidden_size)
+        self.output_layer = nn.Linear(num_heads * att_size, hidden_size)
 
     def forward(self, q, k, v, attn_bias=None):
         orig_q_size = q.size()
@@ -369,9 +369,9 @@ class MultiHeadAttention(nn.Module):
         batch_size = q.size(0)
 
         # head_i = Attention(Q(W^Q)_i, K(W^K)_i, V(W^V)_i)
-        q = self.linear_q(q).view(batch_size, -1, self.head_size, d_k)
-        k = self.linear_k(k).view(batch_size, -1, self.head_size, d_k)
-        v = self.linear_v(v).view(batch_size, -1, self.head_size, d_v)
+        q = self.linear_q(q).view(batch_size, -1, self.num_heads, d_k)
+        k = self.linear_k(k).view(batch_size, -1, self.num_heads, d_k)
+        v = self.linear_v(v).view(batch_size, -1, self.num_heads, d_v)
 
         q = q.transpose(1, 2)                  # [b, h, q_len, d_k]
         v = v.transpose(1, 2)                  # [b, h, v_len, d_v]
@@ -389,7 +389,7 @@ class MultiHeadAttention(nn.Module):
         x = x.matmul(v)  # [b, h, q_len, attn]
 
         x = x.transpose(1, 2).contiguous()  # [b, q_len, h, attn]
-        x = x.view(batch_size, -1, self.head_size * d_v)
+        x = x.view(batch_size, -1, self.num_heads * d_v)
 
         x = self.output_layer(x)
 
@@ -398,12 +398,12 @@ class MultiHeadAttention(nn.Module):
 
 
 class EncoderLayer(nn.Module):
-    def __init__(self, hidden_size, ffn_size, dropout_rate, attention_dropout_rate, head_size):
+    def __init__(self, hidden_size, ffn_size, dropout_rate, attention_dropout_rate, num_heads):
         super(EncoderLayer, self).__init__()
 
         self.self_attention_norm = nn.LayerNorm(hidden_size)
         self.self_attention = MultiHeadAttention(
-            hidden_size, attention_dropout_rate, head_size)
+            hidden_size, attention_dropout_rate, num_heads)
         self.self_attention_dropout = nn.Dropout(dropout_rate)
 
         self.ffn_norm = nn.LayerNorm(hidden_size)
