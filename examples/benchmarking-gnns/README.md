@@ -25,7 +25,7 @@ Graphormer-Slim   | 489.3K  | **0.122**      |
 ```
 [ -z "${exp_name}" ] && exp_name="zinc"
 [ -z "${seed}" ] && seed="1"
-[ -z "${arch}" ] && arch="--ffn_dim 80 --hidden_dim 80 --head_size 8 --dropout_rate 0.1 --n_layers 12 --peak_lr 2e-4 --edge_type multi_hop --multi_hop_max_dist 20"
+[ -z "${arch}" ] && arch="--ffn_dim 80 --hidden_dim 80 --num_heads 8 --dropout_rate 0.1 --n_layers 12 --peak_lr 2e-4 --edge_type multi_hop --multi_hop_max_dist 20"
 [ -z "${warmup_updates}" ] && warmup_updates="40000"
 [ -z "${tot_updates}" ] && tot_updates="400000"
 
