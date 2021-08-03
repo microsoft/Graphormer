@@ -6,9 +6,14 @@ By [Chengxuan Ying](https://github.com/chengxuanying/), [Tianle Cai](https://tia
 
 This repo is the official implementation of ["Do Transformers Really Perform Bad for Graph Representation?"](https://arxiv.org/abs/2106.05234). 
 
-**News:**
-1. [2021-06-16] Graphormer has won the **1st place** of quantum prediction track of Open Graph Benchmark Large-Scale Challenge (KDD CUP 2021) [[Competition Description]](https://ogb.stanford.edu/kddcup2021/pcqm4m/) [[Competition Result]](https://ogb.stanford.edu/kddcup2021/results/) [[Technical Report]](https://arxiv.org/pdf/2106.08279.pdf) [[Official Coverage (Chinese)]](https://www.msra.cn/zh-cn/news/features/ogb-lsc) 
-2. [2021-07-25] Codes and pre-trained models are released.
+## News
+
+***08/03/2021***
+  1. Codes and scripts are released.
+  
+***06/16/2021***
+  1. Graphormer has won the **1st place** of quantum prediction track of Open Graph Benchmark Large-Scale Challenge (KDD CUP 2021) [[Competition Description]](https://ogb.stanford.edu/kddcup2021/pcqm4m/) [[Competition Result]](https://ogb.stanford.edu/kddcup2021/results/) [[Technical Report]](https://arxiv.org/pdf/2106.08279.pdf) [[Official Coverage (Chinese)]](https://www.msra.cn/zh-cn/news/features/ogb-lsc) 
+
 
 ## Introduction
 **Graphormer** is initially described in [arxiv](https://arxiv.org/abs/2106.05234), which is a standard Transformer architecture with several structural encodings, which could effectively encoding the structural information of a graph into the model. 
