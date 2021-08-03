@@ -6,7 +6,8 @@ By [Chengxuan Ying](https://github.com/chengxuanying/), [Tianle Cai](https://tia
 
 This repo is the official implementation of ["Do Transformers Really Perform Bad for Graph Representation?"](https://arxiv.org/abs/2106.05234). 
 
-**News:**
+## News
+
 ***08/03/2021***
   1. Codes and scripts are released.
   
