@@ -11,7 +11,7 @@ import pytorch_lightning as pl
 from utils.flag import flag_bounded
 
 
-def init_bert_params(module, n_layers):
+def init_params(module, n_layers):
     if isinstance(module, nn.Linear):
         module.weight.data.normal_(mean=0.0, std=0.02 / math.sqrt(n_layers))
         if module.bias is not None:
@@ -54,7 +54,7 @@ class Graphormer(pl.LightningModule):
             if self.edge_type == 'multi_hop':
                 self.edge_dis_encoder = nn.Embedding(
                     40 * num_heads * num_heads, 1)
-            self.rel_pos_encoder = nn.Embedding(40, num_heads, padding_idx=0)
+            self.spatial_pos_encoder = nn.Embedding(40, num_heads, padding_idx=0)
             self.in_degree_encoder = nn.Embedding(
                 64, hidden_dim, padding_idx=0)
             self.out_degree_encoder = nn.Embedding(
@@ -68,7 +68,7 @@ class Graphormer(pl.LightningModule):
             if self.edge_type == 'multi_hop':
                 self.edge_dis_encoder = nn.Embedding(
                     128 * num_heads * num_heads, 1)
-            self.rel_pos_encoder = nn.Embedding(512, num_heads, padding_idx=0)
+            self.spatial_pos_encoder = nn.Embedding(512, num_heads, padding_idx=0)
             self.in_degree_encoder = nn.Embedding(
                 512, hidden_dim, padding_idx=0)
             self.out_degree_encoder = nn.Embedding(
@@ -107,10 +107,10 @@ class Graphormer(pl.LightningModule):
         self.flag_mag = flag_mag
         self.hidden_dim = hidden_dim
         self.automatic_optimization = not self.flag
-        self.apply(lambda module: init_bert_params(module, n_layers=n_layers))
+        self.apply(lambda module: init_params(module, n_layers=n_layers))
 
     def forward(self, batched_data, perturb=None):
-        attn_bias, rel_pos, x = batched_data.attn_bias, batched_data.rel_pos, batched_data.x
+        attn_bias, spatial_pos, x = batched_data.attn_bias, batched_data.spatial_pos, batched_data.x
         in_degree, out_degree = batched_data.in_degree, batched_data.in_degree
         edge_input, attn_edge_type = batched_data.edge_input, batched_data.attn_edge_type
         # graph_attn_bias
@@ -119,24 +119,24 @@ class Graphormer(pl.LightningModule):
         graph_attn_bias = graph_attn_bias.unsqueeze(1).repeat(
             1, self.num_heads, 1, 1)  # [n_graph, n_head, n_node+1, n_node+1]
 
-        # rel pos
+        # spatial pos
         # [n_graph, n_node, n_node, n_head] -> [n_graph, n_head, n_node, n_node]
-        rel_pos_bias = self.rel_pos_encoder(rel_pos).permute(0, 3, 1, 2)
+        spatial_pos_bias = self.spatial_pos_encoder(spatial_pos).permute(0, 3, 1, 2)
         graph_attn_bias[:, :, 1:, 1:] = graph_attn_bias[:,
-                                                        :, 1:, 1:] + rel_pos_bias
-        # reset rel pos here
+                                                        :, 1:, 1:] + spatial_pos_bias
+        # reset spatial pos here
         t = self.graph_token_virtual_distance.weight.view(1, self.num_heads, 1)
         graph_attn_bias[:, :, 1:, 0] = graph_attn_bias[:, :, 1:, 0] + t
         graph_attn_bias[:, :, 0, :] = graph_attn_bias[:, :, 0, :] + t
 
         # edge feature
         if self.edge_type == 'multi_hop':
-            rel_pos_ = rel_pos.clone()
-            rel_pos_[rel_pos_ == 0] = 1  # set pad to 1
+            spatial_pos_ = spatial_pos.clone()
+            spatial_pos_[spatial_pos_ == 0] = 1  # set pad to 1
             # set 1 to 1, x > 1 to x - 1
-            rel_pos_ = torch.where(rel_pos_ > 1, rel_pos_ - 1, rel_pos_)
+            spatial_pos_ = torch.where(spatial_pos_ > 1, spatial_pos_ - 1, spatial_pos_)
             if self.multi_hop_max_dist > 0:
-                rel_pos_ = rel_pos_.clamp(0, self.multi_hop_max_dist)
+                spatial_pos_ = spatial_pos_.clamp(0, self.multi_hop_max_dist)
                 edge_input = edge_input[:, :, :, :self.multi_hop_max_dist, :]
             # [n_graph, n_node, n_node, max_dist, n_head]
             edge_input = self.edge_encoder(edge_input).mean(-2)
@@ -148,7 +148,7 @@ class Graphormer(pl.LightningModule):
             edge_input = edge_input_flat.reshape(
                 max_dist, n_graph, n_node, n_node, self.num_heads).permute(1, 2, 3, 0, 4)
             edge_input = (edge_input.sum(-2) /
-                          (rel_pos_.float().unsqueeze(-1))).permute(0, 3, 1, 2)
+                          (spatial_pos_.float().unsqueeze(-1))).permute(0, 3, 1, 2)
         else:
             # [n_graph, n_node, n_node, n_head] -> [n_graph, n_head, n_node, n_node]
             edge_input = self.edge_encoder(
