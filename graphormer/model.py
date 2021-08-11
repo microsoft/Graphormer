@@ -11,7 +11,7 @@ import pytorch_lightning as pl
 from utils.flag import flag_bounded
 
 
-def init_bert_params(module, n_layers):
+def init_params(module, n_layers):
     if isinstance(module, nn.Linear):
         module.weight.data.normal_(mean=0.0, std=0.02 / math.sqrt(n_layers))
         if module.bias is not None:
@@ -107,7 +107,7 @@ class Graphormer(pl.LightningModule):
         self.flag_mag = flag_mag
         self.hidden_dim = hidden_dim
         self.automatic_optimization = not self.flag
-        self.apply(lambda module: init_bert_params(module, n_layers=n_layers))
+        self.apply(lambda module: init_params(module, n_layers=n_layers))
 
     def forward(self, batched_data, perturb=None):
         attn_bias, rel_pos, x = batched_data.attn_bias, batched_data.rel_pos, batched_data.x
