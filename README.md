@@ -11,6 +11,7 @@ This repo is the official implementation of ["Do Transformers Really Perform Bad
 ***09/30/2021***
   1. **Graphormer** has been accepted by **NeurIPS 2021**.
   2. Technical talk of KDD CUP 2021 could be found here. [[Video]](https://youtu.be/MblxCqwengI?t=8316) 
+  3. We're hiring! Please contact ``shuz[at]microsoft.com`` for more information.
 
 ***08/03/2021***
   1. Codes and scripts are released.
