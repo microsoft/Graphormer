@@ -8,6 +8,9 @@ This repo is the official implementation of ["Do Transformers Really Perform Bad
 
 ## News
 
+***09/30/2021***
+  1. **Graphormer** has been accepted by **NeurIPS 2021**.
+
 ***08/03/2021***
   1. Codes and scripts are released.
   
