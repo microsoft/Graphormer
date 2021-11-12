@@ -97,7 +97,7 @@ Please kindly cite this paper if you use the code:
 @article{ying2021transformers,
   title={Do Transformers Really Perform Bad for Graph Representation?},
   author={Ying, Chengxuan and Cai, Tianle and Luo, Shengjie and Zheng, Shuxin and Ke, Guolin and He, Di and Shen, Yanming and Liu, Tie-Yan},
-  journal={arXiv preprint arXiv:2106.05234},
+  journal={Neural Information Processing Systems (NeurIPS)},
   year={2021}
 }
 ```
