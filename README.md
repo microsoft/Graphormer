@@ -7,8 +7,8 @@ This repo is the official implementation of ["Do Transformers Really Perform Bad
 
 ***12/10/2021***
   1. **Graphormer** has won the [Open Catalyst Challenge](https://opencatalystproject.org/challenge.html). The technical talk could be found through this [link](https://www.youtube.com/watch?v=uKJX3Mpu3OA&ab_channel=OpenCatalystProject).
-  2. The **poster** of NeurIPS 2021 could be found through this [link](https://neurips.cc/media/neurips-2021/Slides/27679_XmkCZkZ.pdf).
-  3. The new release of **Graphormer** is comming soon, as a general molecule modeling toolkit, with completed pre-trained model zoo and high effiency.
+  2. The **slides** of NeurIPS 2021 could be found through this [link](https://neurips.cc/media/neurips-2021/Slides/27679_XmkCZkZ.pdf).
+  3. The **new release** of Graphormer is comming soon, as a general molecule modeling toolkit, with models used in OC dataset, completed pre-trained model zoo, flexible data interface, and higher effiency of training.
 
 ***09/30/2021***
   1. **Graphormer** has been accepted by **NeurIPS 2021**.
