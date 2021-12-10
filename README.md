@@ -1,17 +1,18 @@
 # Graphormer <img src="docs/graphformer_logo.png" width="100" align="left"> 
 
 
-
-By [Chengxuan Ying](https://github.com/chengxuanying/), [Tianle Cai](https://tianle.website/), [Shengjie Luo](https://github.com/lsj2408), [Shuxin Zheng](https://www.microsoft.com/en-us/research/people/shuz/)\*, [Guolin Ke](https://github.com/guolinke)\*, [Di He](https://www.microsoft.com/en-us/research/people/dihe/)\*, [Yanming Shen](https://dblp.org/pid/51/3800.html) and [Tie-Yan Liu](https://www.microsoft.com/en-us/research/people/tyliu/).
-
 This repo is the official implementation of ["Do Transformers Really Perform Bad for Graph Representation?"](https://arxiv.org/abs/2106.05234). 
 
 ## News
 
+***12/10/2021***
+  1. **Graphormer** has won the [Open Catalyst Challenge](https://opencatalystproject.org/challenge.html). The technical talk could be found through this [link](https://www.youtube.com/watch?v=uKJX3Mpu3OA&ab_channel=OpenCatalystProject).
+  2. The **poster** of NeurIPS 2021 could be found through this [link](https://neurips.cc/media/neurips-2021/Slides/27679.pdf).
+  3. The new release of **Graphormer** is comming soon, as a general molecule modeling toolkit, with completed pre-trained model zoo and high effiency.
+
 ***09/30/2021***
   1. **Graphormer** has been accepted by **NeurIPS 2021**.
-  2. Technical talk of KDD CUP 2021 could be found here. [[Video]](https://youtu.be/MblxCqwengI?t=8316) 
-  3. We're hiring! Please contact ``shuz[at]microsoft.com`` for more information.
+  2. We're hiring! Please contact ``shuz[at]microsoft.com`` for more information.
 
 ***08/03/2021***
   1. Codes and scripts are released.
