@@ -1,7 +1,7 @@
 # Graphormer <img src="docs/graphformer_logo.png" width="100" align="left"> 
 
 
-This repo is the official implementation of ["Do Transformers Really Perform Bad for Graph Representation?"](https://arxiv.org/abs/2106.05234). 
+This repo is the official implementation of ["Do Transformers Really Perform Badly for Graph Representation?"](https://openreview.net/forum?id=OeWooOxFwDa). 
 
 ## News
 
@@ -95,11 +95,13 @@ pip install torch-geometric==1.6.3 ogb==1.3.1 pytorch-lightning==1.3.1 tqdm torc
 ## Citation
 Please kindly cite this paper if you use the code:
 ```
-@article{ying2021transformers,
-  title={Do Transformers Really Perform Bad for Graph Representation?},
-  author={Ying, Chengxuan and Cai, Tianle and Luo, Shengjie and Zheng, Shuxin and Ke, Guolin and He, Di and Shen, Yanming and Liu, Tie-Yan},
-  journal={Neural Information Processing Systems (NeurIPS)},
-  year={2021}
+@inproceedings{
+ying2021do,
+title={Do Transformers Really Perform Badly for Graph Representation?},
+author={Chengxuan Ying and Tianle Cai and Shengjie Luo and Shuxin Zheng and Guolin Ke and Di He and Yanming Shen and Tie-Yan Liu},
+booktitle={Thirty-Fifth Conference on Neural Information Processing Systems},
+year={2021},
+url={https://openreview.net/forum?id=OeWooOxFwDa}
 }
 ```
 
