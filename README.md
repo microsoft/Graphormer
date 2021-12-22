@@ -11,7 +11,7 @@ Graphormer is a deep learning package that allows researchers and developers to 
 
 ## What's New:
 
-***12/19/2021***
+***12/22/2021***
   1. Graphormer v2.0 is released. Enjoy!
 
 ***12/10/2021***
