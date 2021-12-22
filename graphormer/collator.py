@@ -45,6 +45,7 @@ def pad_edge_type_unsqueeze(x, padlen):
 
 
 def pad_spatial_pos_unsqueeze(x, padlen):
+
     x = x + 1
     xlen = x.size(0)
     if xlen < padlen:
