@@ -1,0 +1,3 @@
+# Release note for PCQM4M
+
+March 1st, 2021: First major release
