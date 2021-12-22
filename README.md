@@ -1,18 +1,26 @@
 # Graphormer <img src="docs/graphformer_logo.png" width="100" align="left"> 
 
 
-
-By [Chengxuan Ying](https://github.com/chengxuanying/), [Tianle Cai](https://tianle.website/), [Shengjie Luo](https://github.com/lsj2408), [Shuxin Zheng](https://www.microsoft.com/en-us/research/people/shuz/)\*, [Guolin Ke](https://github.com/guolinke), [Di He](https://www.microsoft.com/en-us/research/people/dihe/)\*, [Yanming Shen](https://dblp.org/pid/51/3800.html) and [Tie-Yan Liu](https://www.microsoft.com/en-us/research/people/tyliu/).
-
-This repo is the official implementation of ["Do Transformers Really Perform Bad for Graph Representation?"](https://arxiv.org/abs/2106.05234). 
+This repo is the official implementation of ["Do Transformers Really Perform Badly for Graph Representation?"](https://openreview.net/forum?id=OeWooOxFwDa). 
 
 ## News
+
+***12/10/2021***
+  1. **Graphormer** has won the [Open Catalyst Challenge](https://opencatalystproject.org/challenge.html). The technical talk could be found through this [link](https://www.youtube.com/watch?v=uKJX3Mpu3OA&ab_channel=OpenCatalystProject).
+  2. The **slides** of NeurIPS 2021 could be found through this [link](https://neurips.cc/media/neurips-2021/Slides/27679_XmkCZkZ.pdf).
+  3. The **new release** of Graphormer is comming soon, as a general molecule modeling toolkit, with models used in OC dataset, completed pre-trained model zoo, flexible data interface, and higher effiency of training.
+
+***09/30/2021***
+  1. **Graphormer** has been accepted by **NeurIPS 2021**.
+  2. We're hiring! Please contact ``shuz[at]microsoft.com`` for more information.
+
 
 ***08/03/2021***
   1. Codes and scripts are released.
   
 ***06/16/2021***
-  1. Graphormer has won the **1st place** of quantum prediction track of Open Graph Benchmark Large-Scale Challenge (KDD CUP 2021) [[Competition Description]](https://ogb.stanford.edu/kddcup2021/pcqm4m/) [[Competition Result]](https://ogb.stanford.edu/kddcup2021/results/) [[Technical Report]](https://arxiv.org/pdf/2106.08279.pdf) [[Official Coverage (Chinese)]](https://www.msra.cn/zh-cn/news/features/ogb-lsc) 
+  1. Graphormer has won the **1st place** of quantum prediction track of Open Graph Benchmark Large-Scale Challenge (KDD CUP 2021) [[Competition Description]](https://ogb.stanford.edu/kddcup2021/pcqm4m/) [[Competition Result]](https://ogb.stanford.edu/kddcup2021/results/) [[Technical Report]](https://arxiv.org/pdf/2106.08279.pdf)   [[Blog (English)]](https://www.microsoft.com/en-us/research/lab/microsoft-research-asia/articles/transformer-stands-out-as-the-best-graph-learner-researchers-from-microsoft-research-asia-wins-the-kdd-cups-2021-graph-prediction-track/) [[Blog (Chinese)]](https://www.msra.cn/zh-cn/news/features/ogb-lsc) 
+
 
 
 ## Introduction
@@ -89,11 +97,13 @@ pip install torch-geometric==1.6.3 ogb==1.3.1 pytorch-lightning==1.3.1 tqdm torc
 ## Citation
 Please kindly cite this paper if you use the code:
 ```
-@article{ying2021transformers,
-  title={Do Transformers Really Perform Bad for Graph Representation?},
-  author={Ying, Chengxuan and Cai, Tianle and Luo, Shengjie and Zheng, Shuxin and Ke, Guolin and He, Di and Shen, Yanming and Liu, Tie-Yan},
-  journal={arXiv preprint arXiv:2106.05234},
-  year={2021}
+@inproceedings{
+ying2021do,
+title={Do Transformers Really Perform Badly for Graph Representation?},
+author={Chengxuan Ying and Tianle Cai and Shengjie Luo and Shuxin Zheng and Guolin Ke and Di He and Yanming Shen and Tie-Yan Liu},
+booktitle={Thirty-Fifth Conference on Neural Information Processing Systems},
+year={2021},
+url={https://openreview.net/forum?id=OeWooOxFwDa}
 }
 ```
 

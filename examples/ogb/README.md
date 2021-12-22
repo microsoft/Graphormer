@@ -1,6 +1,7 @@
 # Open Graph Benchmark
 
-[https://arxiv.org/abs/2005.00687] (https://arxiv.org/abs/2005.00687)
+[https://arxiv.org/abs/2005.00687](https://arxiv.org/abs/2005.00687)
+
 
 [https://ogb.stanford.edu/](https://ogb.stanford.edu/)
 

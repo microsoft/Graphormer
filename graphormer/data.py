@@ -84,7 +84,7 @@ class GraphDataModule(LightningDataModule):
         batch_size: int = 256,
         seed: int = 42,
         multi_hop_max_dist: int = 5,
-        rel_pos_max: int = 1024,
+        spatial_pos_max: int = 1024,
         *args,
         **kwargs,
     ):
@@ -97,7 +97,7 @@ class GraphDataModule(LightningDataModule):
         self.dataset_train = ...
         self.dataset_val = ...
         self.multi_hop_max_dist = multi_hop_max_dist
-        self.rel_pos_max = rel_pos_max
+        self.spatial_pos_max = spatial_pos_max
 
     def setup(self, stage: str = None):
         if self.dataset_name == 'ZINC':
@@ -118,7 +118,7 @@ class GraphDataModule(LightningDataModule):
             num_workers=self.num_workers,
             pin_memory=True,
             collate_fn=partial(collator, max_node=get_dataset(self.dataset_name)[
-                               'max_node'], multi_hop_max_dist=self.multi_hop_max_dist, rel_pos_max=self.rel_pos_max),
+                               'max_node'], multi_hop_max_dist=self.multi_hop_max_dist, spatial_pos_max=self.spatial_pos_max),
         )
         print('len(train_dataloader)', len(loader))
         return loader
@@ -131,7 +131,7 @@ class GraphDataModule(LightningDataModule):
             num_workers=self.num_workers,
             pin_memory=False,
             collate_fn=partial(collator, max_node=get_dataset(self.dataset_name)[
-                               'max_node'], multi_hop_max_dist=self.multi_hop_max_dist, rel_pos_max=self.rel_pos_max),
+                               'max_node'], multi_hop_max_dist=self.multi_hop_max_dist, spatial_pos_max=self.spatial_pos_max),
         )
         print('len(val_dataloader)', len(loader))
         return loader
@@ -144,7 +144,7 @@ class GraphDataModule(LightningDataModule):
             num_workers=self.num_workers,
             pin_memory=False,
             collate_fn=partial(collator, max_node=get_dataset(self.dataset_name)[
-                               'max_node'], multi_hop_max_dist=self.multi_hop_max_dist, rel_pos_max=self.rel_pos_max),
+                               'max_node'], multi_hop_max_dist=self.multi_hop_max_dist, spatial_pos_max=self.spatial_pos_max),
         )
         print('len(test_dataloader)', len(loader))
         return loader
