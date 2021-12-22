@@ -1,9 +1,18 @@
-# Graphormer <img src="docs/graphformer_logo.png" width="100" align="left"> 
+<img src="docs/logo-10.png" width=100%> 
 
+Graphormer is a deep learning package that allows researchers and developers to train custom models for molecule modeling tasks. It aims to accelerate the research and application in AI for molecule science, such as material discovery, drug discovery, etc. [Project website](https://www.microsoft.com/en-us/research/project/graphormer/).
 
-This repo is the official implementation of ["Do Transformers Really Perform Badly for Graph Representation?"](https://openreview.net/forum?id=OeWooOxFwDa). 
+## Highlights in Graphormer v2.0
+* The model, code, and script used in the [Open Catalyst Challenge](https://opencatalystproject.org/challenge.html) are available.
+* Pre-trained models on PCQM4M and PCQM4Mv2 are available, more pre-trained models are comming soon.
+* Supports interface and datasets of PyG, DGL, OGB, and OCP.
+* Supports fairseq backbone.
+* Document is online!
 
-## News
+## What's New:
+
+***12/19/2021***
+  1. Graphormer v2.0 is released. Enjoy!
 
 ***12/10/2021***
   1. **Graphormer** has won the [Open Catalyst Challenge](https://opencatalystproject.org/challenge.html). The technical talk could be found through this [link](https://www.youtube.com/watch?v=uKJX3Mpu3OA&ab_channel=OpenCatalystProject).
@@ -14,85 +23,33 @@ This repo is the official implementation of ["Do Transformers Really Perform Bad
   1. **Graphormer** has been accepted by **NeurIPS 2021**.
   2. We're hiring! Please contact ``shuz[at]microsoft.com`` for more information.
 
-
 ***08/03/2021***
   1. Codes and scripts are released.
   
 ***06/16/2021***
   1. Graphormer has won the **1st place** of quantum prediction track of Open Graph Benchmark Large-Scale Challenge (KDD CUP 2021) [[Competition Description]](https://ogb.stanford.edu/kddcup2021/pcqm4m/) [[Competition Result]](https://ogb.stanford.edu/kddcup2021/results/) [[Technical Report]](https://arxiv.org/pdf/2106.08279.pdf)   [[Blog (English)]](https://www.microsoft.com/en-us/research/lab/microsoft-research-asia/articles/transformer-stands-out-as-the-best-graph-learner-researchers-from-microsoft-research-asia-wins-the-kdd-cups-2021-graph-prediction-track/) [[Blog (Chinese)]](https://www.msra.cn/zh-cn/news/features/ogb-lsc) 
 
+## Hiring
+We are hiring at all levels (including FTE researchers and interns)! If you are interested in working with us on AI for Molecule Science, please send your resume to <a href="mailto:shuz@microsoft.com" class="x-hidden-focus">shuz@microsoft.com</a>.
 
+## Get Started
 
-## Introduction
-**Graphormer** is initially described in [arxiv](https://arxiv.org/abs/2106.05234), which is a standard Transformer architecture with several structural encodings, which could effectively encoding the structural information of a graph into the model. 
+Our primary documentation is at https://graphormer.readthedocs.io/ and is generated from this repository, which contains instructions for getting started, training new models and extending Graphormer with new model types and tasks.
 
-Graphormer achieves strong performance on PCQM4M-LSC (`0.1234 MAE` on val), MolPCBA (`31.39 AP(%)` on test), MolHIV (`80.51 AUC(%)` on test) and ZINC (`0.122 MAE on test`), surpassing previous models by a large margin.
+Next you may want to read:
 
-
-<p align="center">
-  <img src="docs/graphformer.png" width="600"> 
-</p>
-
-## Main Results 
-
-#### PCQM4M-LSC
-Method        | #params | train MAE | valid MAE |
---------------|---------|-----------|-----------|
-GCN          | 2.0M    | 0.1318    | 0.1691    |
-GIN          | 3.8M    | 0.1203    | 0.1537    |
-GCN-VN          | 4.9M    | 0.1225    | 0.1485    |
-GIN-VN          | 6.7M    | 0.1150    | 0.1395    |
-Graphormer-Small| 12.5M   | 0.0778    | 0.1264    |
-Graphormer   | 47.1M   | 0.0582    | **0.1234**    |
-
-#### OGBG-MolPCBA
-Method        | #params | test AP (%)|
---------------|---------|------------|
-DeeperGCN-VN+FLAG         | 5.6M    | 28.42      |
-DGN          | 6.7M    | 28.85      |
-GINE-VN          | 6.1M    | 29.17      |
-PHC-GNN          | 1.7M    | 29.47      |
-GINE-APPNP          | 6.1M    | 29.79      |
-Graphormer   | 119.5M  | **31.39**      |
-
-#### OGBG-MolHIV
-Method        | #params | test AP (%)|
---------------|---------|------------|
-GCN-GraphNorm          | 526K    | 78.83      |
-PNA          | 326K    | 79.05      |
-PHC-GNN          | 111K    | 79.34      |
-DeeperGCN-FLAG          | 532K    | 79.42      |
-DGN          | 114K    | 79.70      |
-Graphormer   | 47.0M   | **80.51**      |
-
-#### ZINC-500K
-Method        | #params | test MAE   |
---------------|---------|------------|
-GIN          | 509.5K  | 0.526     |
-GraphSage          | 505.3K  | 0.398      |
-GAT          | 531.3K  | 0.384      |
-GCN          | 505.1K  | 0.367      |
-GT          | 588.9K  | 0.226      |
-GatedGCN-PE          | 505.0K  | 0.214      |
-MPNN (sum)          | 480.8K  | 0.145      |
-PNA          | 387.2K  | 0.142      |
-SAN          | 508.6K  | 0.139      |
-Graphormer-Slim   | 489.3K  | **0.122**      |
+* [Examples](https://github.com/microsoft/Graphormer/tree/main/examples) showing command line usage of common tasks.
 
 
 ## Requirements and Installation
 
 #### Setup with Conda
+
 ```
-# create a new environment
-conda create --name graphormer python=3.7
-conda activate graphormer
-# install requirements
-pip install rdkit-pypi cython
-pip install ogb==1.3.1 pytorch-lightning==1.3.0
-pip install torch==1.7.1+cu110 torchvision==0.8.2+cu110 -f https://download.pytorch.org/whl/torch_stable.html
-pip install torch-geometric==1.6.3 ogb==1.3.1 pytorch-lightning==1.3.1 tqdm torch-sparse==0.6.9 torch-scatter==2.0.6 -f https://pytorch-geometric.com/whl/torch-1.7.0+cu110.html
+bash install.sh
 ```
+
+
 
 ## Citation
 Please kindly cite this paper if you use the code:
