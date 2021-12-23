@@ -82,22 +82,25 @@ def eval(args, use_pretrained, checkpoint_path=None, logger=None):
     y_pred = torch.Tensor(y_pred)
     y_true = torch.Tensor(y_true)
 
-    # evaluate
+    # evaluate pretrained models
     if use_pretrained:
         if cfg.task.pretrained_model_name == "pcqm4mv1_graphormer_base":
-            evaluator = ogb.lsc.PCQM4Mv2Evaluator()
-            input_dict = {'y_pred': y_pred, 'y_true': y_true}
-            result_dict = evaluator.eval(input_dict)
-            logger.info(f'PCQM4Mv2Evaluator: {result_dict}')
-        elif cfg.task.pretrained_model_name == "pcqm4mv2_graphormer_base":
             evaluator = ogb.lsc.PCQM4MEvaluator()
             input_dict = {'y_pred': y_pred, 'y_true': y_true}
             result_dict = evaluator.eval(input_dict)
             logger.info(f'PCQM4Mv1Evaluator: {result_dict}')
+        elif cfg.task.pretrained_model_name == "pcqm4mv2_graphormer_base":
+            evaluator = ogb.lsc.PCQM4Mv2Evaluator()
+            input_dict = {'y_pred': y_pred, 'y_true': y_true}
+            result_dict = evaluator.eval(input_dict)
+            logger.info(f'PCQM4Mv2Evaluator: {result_dict}')
     else:
         if args.metric == "auc":
             auc = roc_auc_score(y_true, y_pred)
             logger.info(f"auc: {auc}")
+        elif args.metric == "mae":
+            mae = np.mean(np.abs(y_true - y_pred))
+            logger.info(f"mae: {mae}")
         else:
             raise ValueError(f"Unsupported metric {args.metric}")
 
@@ -113,13 +116,13 @@ def main():
     )
     args = options.parse_args_and_arch(parser, modify_parser=None)
     logger = logging.getLogger(__name__)
-    if hasattr(args, "save_dir"):
+    if args.pretrained_model_name != "none":
+        eval(args, True, logger=logger)
+    elif hasattr(args, "save_dir"):
         for checkpoint_fname in os.listdir(args.save_dir):
             checkpoint_path = Path(args.save_dir) / checkpoint_fname
             logger.info(f"evaluating checkpoint file {checkpoint_path}")
             eval(args, False, checkpoint_path, logger)
-    else:
-        eval(args, True, logger=logger)
 
 
 
