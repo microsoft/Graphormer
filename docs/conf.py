@@ -63,4 +63,4 @@ html_theme_options = {
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 
-html_logo = str(CURR_PATH / 'logo-09.png')
+html_logo = str(CURR_PATH / 'logo-11.png')
