@@ -27,7 +27,8 @@ class GraphormerPYGDataset(Dataset):
         test_set=None,
     ):
         self.dataset = dataset
-        self.num_data = len(self.dataset)
+        if self.dataset is not None:
+            self.num_data = len(self.dataset)
         self.seed = seed
         if train_idx is None and train_set is None:
             train_valid_idx, test_idx = train_test_split(
@@ -45,6 +46,7 @@ class GraphormerPYGDataset(Dataset):
             self.valid_data = self.index_select(self.valid_idx)
             self.test_data = self.index_select(self.test_idx)
         elif train_set is not None:
+            self.num_data = len(train_set) + len(valid_set) + len(test_set)
             self.train_data = self.create_subset(train_set)
             self.valid_data = self.create_subset(valid_set)
             self.test_data = self.create_subset(test_set)
@@ -52,6 +54,7 @@ class GraphormerPYGDataset(Dataset):
             self.valid_idx = None
             self.test_idx = None
         else:
+            self.num_data = len(train_idx) + len(valid_idx) + len(test_idx)
             self.train_idx = train_idx
             self.valid_idx = valid_idx
             self.test_idx = test_idx

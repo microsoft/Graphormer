@@ -2,9 +2,6 @@
 # Licensed under the MIT License.
 #!/usr/bin/env bash
 
-# create new environment
-conda create --name graphormerv2 python=3.9
-conda activate graphormerv2
 
 # install requirements
 pip install torch==1.9.1+cu111 torchaudio -f https://download.pytorch.org/whl/cu111/torch_stable.html

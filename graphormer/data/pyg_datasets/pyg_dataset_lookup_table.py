@@ -4,7 +4,6 @@
 from typing import Optional
 from torch_geometric.datasets import *
 from torch_geometric.data import Dataset
-from torch.nn import functional
 from .pyg_dataset import GraphormerPYGDataset
 import torch.distributed as dist
 
@@ -63,18 +62,6 @@ class MyMoleculeNet(MoleculeNet):
         if dist.is_initialized():
             dist.barrier()
 
-class MyMD17(MD17):
-    def download(self):
-        if not dist.is_initialized() or dist.get_rank() == 0:
-            super(MyMD17, self).download()
-        if dist.is_initialized():
-            dist.barrier()
-
-    def process(self):
-        if not dist.is_initialized() or dist.get_rank() == 0:
-            super(MyMD17, self).process()
-        if dist.is_initialized():
-            dist.barrier()
 
 
 class PYGDatasetLookupTable:
@@ -111,13 +98,6 @@ class PYGDatasetLookupTable:
                 if name == "name":
                     nm = value
             inner_dataset = MyMoleculeNet(root=root, name=nm)
-        elif name == "md17":
-            nm = None
-            for param in params:
-                name, value = param.split("=")
-                if name == "name":
-                    nm = value
-            inner_dataset = MyMD17(root=root, name=nm)
         else:
             raise ValueError(f"Unknown dataset name {name} for pyg source.")
         if train_set is not None:
