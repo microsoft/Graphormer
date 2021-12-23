@@ -79,7 +79,7 @@ To evaluate a pre-trained model, use the script ``graphormer/evaluate/evaluate.p
 ``--pretrained-model-name`` specifies the pre-trained model to be valuated. The pre-trained model will be automatically downloaded. And ``--load-pretrained-model-output-layer`` is set so that weights of the
 final fully connected layer in the pre-trained model is loaded. And ``--split`` specifies the split of the dataset to be evaluated, can be ``train`` or ``valid``.
 
-Fine-tuning Pre-trained Models
+Fine-tune Pre-trained Models
 ==============================
 To fine-tune pre-trained models, use ``--pretrained-model-name`` to set the model name. For example, the script ``examples/property_prediction/hiv_pre.sh``
 fine-tunes our model ``pcqm4mv1_graphormer_base`` on the ``ogbg-molhiv`` dataset. The command for fine-tune is
@@ -110,9 +110,9 @@ fine-tunes our model ``pcqm4mv1_graphormer_base`` on the ``ogbg-molhiv`` dataset
         --max-epoch $max_epoch \
         --save-dir ./ckpts \
         --pretrained-model-name pcqm4mv1_graphormer_base \
-        --flag-m 2 \
-        --flag-step-size 0.2 \
-        --flag-mag 0 \
+        --flag-m 3 \
+        --flag-step-size 0.001 \
+        --flag-mag 0.001 \
         --seed 1
 
 After fine-tuning, use ``graphormer/evaluate/evaluate.py`` to evaluate the performance of all checkpoints:
