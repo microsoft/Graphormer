@@ -110,9 +110,9 @@ fine-tunes our model ``pcqm4mv1_graphormer_base`` on the ``ogbg-molhiv`` dataset
         --max-epoch $max_epoch \
         --save-dir ./ckpts \
         --pretrained-model-name pcqm4mv1_graphormer_base \
-        --flag-m 2 \
-        --flag-step-size 0.2 \
-        --flag-mag 0 \
+        --flag-m 3 \
+        --flag-step-size 0.001 \
+        --flag-mag 0.001 \
         --seed 1
 
 After fine-tuning, use ``graphormer/evaluate/evaluate.py`` to evaluate the performance of all checkpoints:
