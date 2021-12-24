@@ -55,6 +55,32 @@ Model
 
 Training
 --------
+-  ``--task``, type = enum, options: ``graph_prediction``, ``is2re``
+
+   -  the task for training
+
+      - ``graph_prediction``: ordinary graph-level prediction task, predict a single target for a graph
+
+      - ``is2re``: for IS2RE task of `Open Catalyst Challenge`_
+
+-  ``--criterion``, type = enum, options: ``l1_loss``, ``binary_logloss``, ``multiclass_cross_entropy``, ``mae_deltapos``, ``l1_loss_with_flag``, ``binary_logloss_with_flag``, ``multiclass_cross_entropy_with_flag``
+
+   -  the criterion, or objective function for training.
+
+      - ``l1_loss``: mean absolute error (MAE) for regression tasks
+
+      - ``binary_logloss``: binary cross entropy for binary classification
+
+      - ``multiclass_cross_entropy``: multi-class cross entropy for multi-class classification
+
+      - ``mae_deltapos``: criterion for IS2RE task of `Open Catalyst Challenge`_
+
+      - ``l1_loss_with_flag``: ``l1_loss`` with FLAG_
+
+      - ``binary_logloss_with_flag``: ``binary_logloss`` with FLAG_
+
+      - ``multiclass_cross_entropy_with_flag``: ``multiclass_cross_entropy`` with FLAG_
+
 -  ``--apply-graphormer-init``, type = bool
 
    -  if set, use custom param initialization for Graphormer
@@ -177,3 +203,7 @@ Dataset
 -  ``--user-data-dir``, type = str, default=""
 
    -  path to the module of user-defined dataset
+
+
+.. _Open Catalyst Challenge: https://opencatalystproject.org/challenge.html
+.. _FLAG: https://arxiv.org/abs/2010.09891
