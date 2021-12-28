@@ -21,7 +21,12 @@ from fairseq.tasks import FairseqDataclass, FairseqTask, register_task
 
 from graphormer.pretrain import load_pretrained_model
 
-from ..data.dataset import BatchedDataDataset, TargetDataset, GraphormerDataset
+from ..data.dataset import (
+    BatchedDataDataset,
+    TargetDataset,
+    GraphormerDataset,
+    EpochShuffleDataset,
+)
 
 import torch
 from fairseq.optim.amp_optimizer import AMPOptimizer
@@ -109,6 +114,11 @@ class GraphPredictionConfig(FairseqDataclass):
         metadata={"help": "whether to load the output layer of pretrained model"},
     )
 
+    train_epoch_shuffle: bool = field(
+        default=False,
+        metadata={"help": "whether to shuffle the dataset at each epoch"},
+    )
+
 
 @register_task("graph_prediction", dataclass=GraphPredictionConfig)
 class GraphPredictionTask(FairseqTask):
@@ -160,6 +170,11 @@ class GraphPredictionTask(FairseqTask):
             },
             sizes=data_sizes,
         )
+
+        if split == "train" and self.cfg.train_epoch_shuffle:
+            dataset = EpochShuffleDataset(
+                dataset, size=len(dataset), seed=self.cfg.seed
+            )
 
         logger.info("Loaded {0} with #samples: {1}".format(split, len(dataset)))
 
