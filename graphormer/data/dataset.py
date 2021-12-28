@@ -4,7 +4,7 @@ import ogb
 import numpy as np
 import torch
 from torch.nn import functional as F
-from fairseq.data import FairseqDataset
+from fairseq.data import data_utils, FairseqDataset, BaseWrapperDataset
 
 from .wrapper import MyPygGraphPropPredDataset
 from .collator import collator
@@ -92,3 +92,22 @@ class GraphormerDataset:
         self.dataset_train = self.dataset.train_data
         self.dataset_val = self.dataset.valid_data
         self.dataset_test = self.dataset.test_data
+
+
+class EpochShuffleDataset(BaseWrapperDataset):
+    def __init__(self, dataset, num_samples, seed):
+        super().__init__(dataset)
+        self.num_samples = num_samples
+        self.seed = seed
+        self.set_epoch(1)
+
+    def set_epoch(self, epoch):
+        with data_utils.numpy_seed(self.seed + epoch - 1):
+            self.sort_order = np.random.permutation(self.num_samples)
+
+    def ordered_indices(self):
+        return self.sort_order
+
+    @property
+    def can_reuse_epoch_itr_across_epochs(self):
+        return False

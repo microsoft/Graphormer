@@ -20,27 +20,7 @@ from fairseq.data import (
 )
 from fairseq.tasks import FairseqTask, register_task
 
-
-class EpochShuffleDataset(BaseWrapperDataset):
-    def __init__(self, dataset, num_samples, seed):
-        super().__init__(dataset)
-        self.num_samples = num_samples
-        self.seed = seed
-        self.set_epoch(1)
-
-    def set_epoch(self, epoch):
-        with data_utils.numpy_seed(self.seed + epoch - 1):
-            self.sort_order = np.random.permutation(
-                self.num_samples
-            )  # random ordered_indices will break fairseq bucket by size batch iter, but we just want to reproduce...
-
-    def ordered_indices(self):
-        return self.sort_order
-
-    @property
-    def can_reuse_epoch_itr_across_epochs(self):
-        return False
-
+from ..data.dataset import EpochShuffleDataset
 
 class LMDBDataset:
     def __init__(self, db_path):
