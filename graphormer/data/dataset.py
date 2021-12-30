@@ -73,15 +73,17 @@ class GraphormerDataset:
         super().__init__()
         if dataset is not None:
             if dataset_source == "dgl":
-                self.dataset = GraphormerDGLDataset(dataset, train_idx, valid_idx, test_idx)
+                self.dataset = GraphormerDGLDataset(dataset, seed=seed, train_idx=train_idx, valid_idx=valid_idx, test_idx=test_idx)
             elif dataset_source == "pyg":
-                self.dataset = GraphormerPYGDataset(dataset, train_idx, valid_idx, test_idx)
+                self.dataset = GraphormerPYGDataset(dataset, train_idx=train_idx, valid_idx=valid_idx, test_idx=test_idx)
+            else:
+                raise ValueError("customized dataset can only have source pyg or dgl")
         elif dataset_source == "dgl":
-            self.dataset = DGLDatasetLookupTable.GetDGLDataset(dataset_spec, seed)
+            self.dataset = DGLDatasetLookupTable.GetDGLDataset(dataset_spec, seed=seed)
         elif dataset_source == "pyg":
-            self.dataset = PYGDatasetLookupTable.GetPYGDataset(dataset_spec, seed)
+            self.dataset = PYGDatasetLookupTable.GetPYGDataset(dataset_spec, seed=seed)
         elif dataset_source == "ogb":
-            self.dataset = OGBDatasetLookupTable.GetOGBDataset(dataset_spec, seed)
+            self.dataset = OGBDatasetLookupTable.GetOGBDataset(dataset_spec, seed=seed)
         self.setup()
 
     def setup(self):

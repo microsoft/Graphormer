@@ -276,11 +276,6 @@ class GraphPredictionWithFlagTask(GraphPredictionTask):
 
     def __init__(self, cfg):
         super().__init__(cfg)
-        self.dm = GraphormerDataset(
-            dataset_spec=cfg.dataset_name,
-            dataset_source=cfg.dataset_source,
-            seed=cfg.seed,
-        )
         self.flag_m = cfg.flag_m
         self.flag_step_size = cfg.flag_step_size
         self.flag_mag = cfg.flag_mag
