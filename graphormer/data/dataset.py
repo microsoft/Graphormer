@@ -72,9 +72,9 @@ class GraphormerDataset:
     ):
         super().__init__()
         if dataset is not None:
-            if dataset_source == "dgl" or dataset_source == "ogb":
+            if dataset_source == "dgl":
                 self.dataset = GraphormerDGLDataset(dataset, seed=seed, train_idx=train_idx, valid_idx=valid_idx, test_idx=test_idx)
-            elif dataset_source == "pyg":
+            elif dataset_source == "pyg" or dataset_source == "ogb":
                 self.dataset = GraphormerPYGDataset(dataset, train_idx=train_idx, valid_idx=valid_idx, test_idx=test_idx)
         elif dataset_source == "dgl":
             self.dataset = DGLDatasetLookupTable.GetDGLDataset(dataset_spec, seed=seed)
