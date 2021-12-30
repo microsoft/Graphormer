@@ -76,7 +76,7 @@ class GraphormerDataset:
                 self.dataset = GraphormerDGLDataset(dataset, seed=seed, train_idx=train_idx, valid_idx=valid_idx, test_idx=test_idx)
             elif dataset_source == "pyg":
                 self.dataset = GraphormerPYGDataset(dataset, train_idx=train_idx, valid_idx=valid_idx, test_idx=test_idx)
-            elif dataset_source == "ogb":
+            else:
                 raise ValueError("customized dataset can only have source pyg or dgl")
         elif dataset_source == "dgl":
             self.dataset = DGLDatasetLookupTable.GetDGLDataset(dataset_spec, seed=seed)
