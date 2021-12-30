@@ -1,6 +1,6 @@
+#!/usr/bin/env bash
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
-#!/usr/bin/env bash
 
 lr=${lr:-3e-4}
 warmup_steps=${warmup_steps:-10000}

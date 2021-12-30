@@ -171,5 +171,3 @@ Now we train a 48-layer ``graphormer-3D`` architecture, which has 4 blocks and e
        --save-dir ./ckpt --layers 12 --blocks 4 --required-batch-size-multiple 1  --node-loss-weight 15
 
 Please note that ``--batch-size 4`` requires at least 32GB of GPU memory. If out of GPU momery occuars, one may try to reduce the batchsize then train with more GPU cards, or increase the ``--update-freq`` to accumulate the gradients.
-
-    

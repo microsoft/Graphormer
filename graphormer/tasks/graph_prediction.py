@@ -11,6 +11,7 @@ import logging
 import contextlib
 from dataclasses import dataclass, field
 from omegaconf import II, open_dict, OmegaConf
+import importlib
 
 import numpy as np
 from fairseq.data import (
@@ -21,11 +22,20 @@ from fairseq.tasks import FairseqDataclass, FairseqTask, register_task
 
 from graphormer.pretrain import load_pretrained_model
 
-from ..data.dataset import BatchedDataDataset, TargetDataset, GraphormerDataset
+from ..data.dataset import (
+    BatchedDataDataset,
+    TargetDataset,
+    GraphormerDataset,
+    EpochShuffleDataset,
+)
 
 import torch
 from fairseq.optim.amp_optimizer import AMPOptimizer
 import math
+
+from ..data import DATASET_REGISTRY
+import sys
+import os
 
 logger = logging.getLogger(__name__)
 
@@ -109,6 +119,16 @@ class GraphPredictionConfig(FairseqDataclass):
         metadata={"help": "whether to load the output layer of pretrained model"},
     )
 
+    train_epoch_shuffle: bool = field(
+        default=False,
+        metadata={"help": "whether to shuffle the dataset at each epoch"},
+    )
+
+    user_data_dir: str = field(
+        default="",
+        metadata={"help": "path to the module of user-defined dataset"},
+    )
+
 
 @register_task("graph_prediction", dataclass=GraphPredictionConfig)
 class GraphPredictionTask(FairseqTask):
@@ -118,11 +138,40 @@ class GraphPredictionTask(FairseqTask):
 
     def __init__(self, cfg):
         super().__init__(cfg)
-        self.dm = GraphormerDataset(
-            dataset_spec=cfg.dataset_name,
-            dataset_source=cfg.dataset_source,
-            seed=cfg.seed,
-        )
+        if cfg.user_data_dir != "":
+            self.__import_user_defined_datasets(cfg.user_data_dir)
+            if cfg.dataset_name in DATASET_REGISTRY:
+                dataset_dict = DATASET_REGISTRY[cfg.dataset_name]
+                self.dm = GraphormerDataset(
+                    dataset=dataset_dict["dataset"],
+                    dataset_source=dataset_dict["source"],
+                    train_idx=dataset_dict["train_idx"],
+                    valid_idx=dataset_dict["valid_idx"],
+                    test_idx=dataset_dict["test_idx"],
+                    seed=cfg.seed)
+            else:
+                raise ValueError(f"dataset {cfg.dataset_name} is not found in customized dataset module {cfg.user_data_dir}")
+        else:
+            self.dm = GraphormerDataset(
+                dataset_spec=cfg.dataset_name,
+                dataset_source=cfg.dataset_source,
+                seed=cfg.seed,
+            )
+
+    def __import_user_defined_datasets(self, dataset_dir):
+        dataset_dir = dataset_dir.strip("/")
+        module_parent, module_name = os.path.split(dataset_dir)
+        sys.path.insert(0, module_parent)
+        importlib.import_module(module_name)
+        for file in os.listdir(dataset_dir):
+            path = os.path.join(dataset_dir, file)
+            if (
+                not file.startswith("_")
+                and not file.startswith(".")
+                and (file.endswith(".py") or os.path.isdir(path))
+            ):
+                task_name = file[: file.find(".py")] if file.endswith(".py") else file
+                importlib.import_module(module_name + "." + task_name)
 
     @classmethod
     def setup_task(cls, cfg, **kwargs):
@@ -160,6 +209,11 @@ class GraphPredictionTask(FairseqTask):
             },
             sizes=data_sizes,
         )
+
+        if split == "train" and self.cfg.train_epoch_shuffle:
+            dataset = EpochShuffleDataset(
+                dataset, size=len(dataset), seed=self.cfg.seed
+            )
 
         logger.info("Loaded {0} with #samples: {1}".format(split, len(dataset)))
 
