@@ -25,8 +25,12 @@ class GraphormerDGLDataset(Dataset):
         train_idx=None,
         valid_idx=None,
         test_idx=None,
+        max_dist=5,
+        algo_name="bfs_numba"
     ):
         self.dataset = dataset
+        self.max_dist = max_dist
+        
         num_data = len(self.dataset)
         self.seed = seed
         if train_idx is None:
@@ -114,11 +118,11 @@ class GraphormerDGLDataset(Dataset):
             )
         N = graph_data.num_nodes()
 
-        if algo_name == "bfs_numba":
+        if self.algo_name == "bfs_numba":
             process_algo = bfs_numba_spatial_pos_and_edge_input
-        elif algo_name == "bfs_cython":
+        elif self.algo_name == "bfs_cython":
             process_algo = algos.bfs_spatial_pos_and_edge_input
-        elif algo_name == "floyd":
+        elif self.algo_name == "floyd":
             process_algo = algos.fw_spatial_pos_and_edge_input
 
         (
@@ -137,7 +141,7 @@ class GraphormerDGLDataset(Dataset):
         dense_adj = graph_data.adj().to_dense().type(torch.int)
 
         spatial_pos, edge_input = process_algo(
-            dense_adj.numpy().astype("long"), attn_edge_type, max_dist)
+            dense_adj.numpy().astype("long"), attn_edge_type, self.max_dist)
         attn_bias = torch.zeros([N + 1, N + 1], dtype=torch.float)  # with graph token
 
         pyg_graph = PYGGraph()

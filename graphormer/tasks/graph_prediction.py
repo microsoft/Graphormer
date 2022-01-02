@@ -107,6 +107,11 @@ class GraphPredictionConfig(FairseqDataclass):
         metadata={"help": "edge type in the graph"},
     )
 
+    algo_name: str = field(
+        default="bfs_numba",
+        metadata={"help": "algo for getting path and edge input"},
+    )
+
     seed: int = II("common.seed")
 
     pretrained_model_name: str = field(
@@ -148,7 +153,10 @@ class GraphPredictionTask(FairseqTask):
                     train_idx=dataset_dict["train_idx"],
                     valid_idx=dataset_dict["valid_idx"],
                     test_idx=dataset_dict["test_idx"],
-                    seed=cfg.seed)
+                    seed=cfg.seed,
+                    algo_name=cfg.algo_name,
+                    max_dist=cfg.multi_hop_max_dist
+                )
             else:
                 raise ValueError(f"dataset {cfg.dataset_name} is not found in customized dataset module {cfg.user_data_dir}")
         else:
@@ -156,6 +164,8 @@ class GraphPredictionTask(FairseqTask):
                 dataset_spec=cfg.dataset_name,
                 dataset_source=cfg.dataset_source,
                 seed=cfg.seed,
+                algo_name=cfg.algo_name,
+                max_dist=cfg.multi_hop_max_dist
             )
 
     def __import_user_defined_datasets(self, dataset_dir):
