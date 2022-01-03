@@ -206,38 +206,3 @@ def bfs_spatial_pos_and_edge_input(
                 spatial_pos[i, j] = dist[j]
 
     return np.asarray(spatial_pos), np.asarray(edge_input)
-
-def bfs_target_spatial_pos_and_edge_input(
-    np.int64_t[:, :] adj_matrix,
-    np.int64_t[:, :, :] edge_type,
-    int max_dist=5,
-):
-
-    cdef:
-        int i, j
-        int n = adj_matrix.shape[0]
-        int edge_type_shape = edge_type.shape[2]
-        np.ndarray[np.int64_t, ndim=4, mode='c'] edge_input = np.full(
-            shape=(n, n, max_dist, edge_type_shape),
-            fill_value=-1,
-            dtype="int64"
-        )
-        np.int64_t[:, :] spatial_pos = np.full((n ,n), 510, dtype="int64")
-        cdef vector[vector[int]] adj_list
-
-    for i in range(n):
-        adj_list.push_back(vector[int]())
-        for j in range(i+1):
-            if adj_matrix[i][j] == 1:
-                adj_list[i].push_back(j)
-        for j in range(i):
-            if adj_matrix[j][i] == 1:
-                adj_list[j].push_back(i)
-        dist, path = bfs_shortest_path(adj_list, i)
-        edge_input[i, :i+1, :, :] = np.asarray(get_full_path(
-            path, edge_type[:i+1, :i+1, :], max_dist, i))
-        for j in range(i+1):
-            if dist[j] != -1:
-                spatial_pos[i, j] = dist[j]
-
-    return np.asarray(spatial_pos), np.asarray(edge_input)

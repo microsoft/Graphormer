@@ -30,7 +30,7 @@ class GraphormerDGLDataset(Dataset):
     ):
         self.dataset = dataset
         self.max_dist = max_dist
-        
+        self.algo_name = algo_name
         num_data = len(self.dataset)
         self.seed = seed
         if train_idx is None:
