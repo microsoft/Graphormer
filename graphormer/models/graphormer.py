@@ -267,7 +267,7 @@ def base_architecture(args):
     args.apply_graphormer_init = getattr(args, "apply_graphormer_init", False)
 
     args.activation_fn = getattr(args, "activation_fn", "gelu")
-    args.encoder_normalize_before = getattr(args, "encoder_normalize_before", False)
+    args.encoder_normalize_before = getattr(args, "encoder_normalize_before", True)
 
 
 @register_model_architecture("graphormer", "graphormer_base")
