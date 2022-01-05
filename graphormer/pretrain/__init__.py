@@ -4,6 +4,7 @@ import torch.distributed as dist
 PRETRAINED_MODEL_URLS = {
     "pcqm4mv1_graphormer_base":"https://szheng.blob.core.windows.net/graphormer/modelzoo/pcqm4mv1/checkpoint_best_pcqm4mv1_full.pt",
     "pcqm4mv2_graphormer_base":"https://szheng.blob.core.windows.net/graphormer/modelzoo/pcqm4mv2/checkpoint_best_pcqm4mv2_full.pt",
+    "oc20is2re_graphormer3d_base":"https://szheng.blob.core.windows.net/graphormer/modelzoo/oc20is2re/checkpoint_last_oc20_is2re.pt",
 }
 
 def load_pretrained_model(pretrained_model_name):
