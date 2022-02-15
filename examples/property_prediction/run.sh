@@ -5,7 +5,7 @@
 git_commit=$(git rev-parse HEAD)
 echo "Using git commit ${git_commit}"
 checkpoint_dir=checkpoint_$1_$2_$3_$4_${git_commit}
-mkdir checkpoint_$1_$2_$3_$4_${git_commit}
+mkdir /blob/mol/${checkpoint_dir}
 
 if [[ $4 == "fp16" ]]; then
     if [[ $3 == "graphormer_v2" ]] && [[ $1 == "large" ]] && [[ $2 == "pcqm4mv2" ]]; then
