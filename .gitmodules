@@ -1,4 +1,3 @@
 [submodule "fairseq"]
 	path = fairseq
 	url = git://github.com/MinhZou/fairseq.git
-	branch = main
