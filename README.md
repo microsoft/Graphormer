@@ -12,7 +12,7 @@ Graphormer is a deep learning package that allows researchers and developers to 
 ## What's New:
 
 ***03/10/2022***
-  1. A technical report of improvement benchmarks on PCQM4M & Open Catalyst Project has been published [online](https://arxiv.org/abs/2203.04810).
+  1. We upload a [technical report](https://arxiv.org/abs/2203.04810) which describes improved benchmarks on PCQM4M & Open Catalyst Project.
 
 ***12/22/2021***
   1. Graphormer v2.0 is released. Enjoy!
