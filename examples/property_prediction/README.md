@@ -87,13 +87,12 @@ Graphormer-Slim   | 489.3K  | **0.122**      |
 ## Citation
 Please kindly cite this paper if you use the code:
 ```
-@inproceedings{
-ying2021do,
-title={Do Transformers Really Perform Badly for Graph Representation?},
-author={Chengxuan Ying and Tianle Cai and Shengjie Luo and Shuxin Zheng and Guolin Ke and Di He and Yanming Shen and Tie-Yan Liu},
-booktitle={Thirty-Fifth Conference on Neural Information Processing Systems},
-year={2021},
-url={https://openreview.net/forum?id=OeWooOxFwDa}
+@article{shi2022benchmarking,
+  title={Benchmarking Graphormer on Large-Scale Molecular Modeling Datasets},
+  author={Yu Shi and Shuxin Zheng and Guolin Ke and Yifei Shen and Jiacheng You and Jiyan He and Shengjie Luo and Chang Liu and Di He and Tie-Yan Liu},
+  journal={arXiv preprint arXiv:2203.04810},
+  year={2022},
+  url={https://arxiv.org/abs/2203.04810}
 }
 ```
 
