@@ -11,6 +11,9 @@ Graphormer is a deep learning package that allows researchers and developers to 
 
 ## What's New:
 
+***03/10/2022***
+  1. A technical report of improvement benchmarks on PCQM4M & Open Catalyst Project has been published [online](https://arxiv.org/abs/2203.04810).
+
 ***12/22/2021***
   1. Graphormer v2.0 is released. Enjoy!
 
@@ -54,6 +57,14 @@ bash install.sh
 ## Citation
 Please kindly cite this paper if you use the code:
 ```
+@article{ying2021first,
+  title={Benchmarking Graphormer on Large-Scale Molecular Modeling Datasets},
+  author={Yu Shi and Shuxin Zheng and Guolin Ke and Yifei Shen and Jiacheng You and Jiyan He and Shengjie Luo and Chang Liu and Di He and Tie-Yan Liu},
+  journal={arXiv preprint arXiv:2203.04810},
+  year={2022},
+  url={https://arxiv.org/abs/2203.04810}
+}
+
 @inproceedings{
 ying2021do,
 title={Do Transformers Really Perform Badly for Graph Representation?},
