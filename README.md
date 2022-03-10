@@ -57,7 +57,7 @@ bash install.sh
 ## Citation
 Please kindly cite this paper if you use the code:
 ```
-@article{ying2021first,
+@article{shi2022benchmarking,
   title={Benchmarking Graphormer on Large-Scale Molecular Modeling Datasets},
   author={Yu Shi and Shuxin Zheng and Guolin Ke and Yifei Shen and Jiacheng You and Jiyan He and Shengjie Luo and Chang Liu and Di He and Tie-Yan Liu},
   journal={arXiv preprint arXiv:2203.04810},
