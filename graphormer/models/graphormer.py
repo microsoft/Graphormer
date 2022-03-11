@@ -125,6 +125,11 @@ class GraphormerModel(FairseqEncoderModel):
             action="store_true",
             help="apply layernorm before each encoder block",
         )
+        parser.add_argument(
+            "--pre-layernorm",
+            action="store_true",
+            help="apply layernorm before self-attention and ffn. Without this, post layernorm will used",
+        )
 
     def max_nodes(self):
         return self.encoder.max_nodes
@@ -171,6 +176,7 @@ class GraphormerEncoder(FairseqEncoder):
             attention_dropout=args.attention_dropout,
             activation_dropout=args.act_dropout,
             encoder_normalize_before=args.encoder_normalize_before,
+            pre_layernorm=args.pre_layernorm,
             apply_graphormer_init=args.apply_graphormer_init,
             activation_fn=args.activation_fn,
         )
@@ -272,15 +278,9 @@ def base_architecture(args):
 
 @register_model_architecture("graphormer", "graphormer_base")
 def graphormer_base_architecture(args):
-    if args.pretrained_model_name == "pcqm4mv1_graphormer_base":
-        args.encoder_layers = 12
-        args.encoder_attention_heads = 32
-        args.encoder_ffn_embed_dim = 768
-        args.encoder_embed_dim = 768
-        args.dropout = getattr(args, "dropout", 0.0)
-        args.attention_dropout = getattr(args, "attention_dropout", 0.1)
-        args.act_dropout = getattr(args, "act_dropout", 0.1)
-    elif args.pretrained_model_name == "pcqm4mv2_graphormer_base":
+    if args.pretrained_model_name == "pcqm4mv1_graphormer_base" or \
+       args.pretrained_model_name == "pcqm4mv2_graphormer_base" or \
+       args.pretrained_model_name == "pcqm4mv1_graphormer_base_for_molhiv":
         args.encoder_layers = 12
         args.encoder_attention_heads = 32
         args.encoder_ffn_embed_dim = 768
@@ -290,11 +290,12 @@ def graphormer_base_architecture(args):
         args.act_dropout = getattr(args, "act_dropout", 0.1)
     else:
         args.encoder_embed_dim = getattr(args, "encoder_embed_dim", 768)
-
         args.encoder_layers = getattr(args, "encoder_layers", 12)
-
         args.encoder_attention_heads = getattr(args, "encoder_attention_heads", 32)
         args.encoder_ffn_embed_dim = getattr(args, "encoder_ffn_embed_dim", 768)
+        args.dropout = getattr(args, "dropout", 0.0)
+        args.attention_dropout = getattr(args, "attention_dropout", 0.1)
+        args.act_dropout = getattr(args, "act_dropout", 0.1)
 
     args.activation_fn = getattr(args, "activation_fn", "gelu")
     args.encoder_normalize_before = getattr(args, "encoder_normalize_before", True)
@@ -305,6 +306,7 @@ def graphormer_base_architecture(args):
     args.no_token_positional_embeddings = getattr(
         args, "no_token_positional_embeddings", False
     )
+    args.pre_layernorm = getattr(args, "pre_layernorm", False)
     base_architecture(args)
 
 
@@ -326,6 +328,7 @@ def graphormer_slim_architecture(args):
     args.no_token_positional_embeddings = getattr(
         args, "no_token_positional_embeddings", False
     )
+    args.pre_layernorm = getattr(args, "pre_layernorm", False)
     base_architecture(args)
 
 
@@ -347,4 +350,5 @@ def graphormer_large_architecture(args):
     args.no_token_positional_embeddings = getattr(
         args, "no_token_positional_embeddings", False
     )
+    args.pre_layernorm = getattr(args, "pre_layernorm", False)
     base_architecture(args)

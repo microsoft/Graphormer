@@ -111,9 +111,10 @@ fine-tunes our model ``pcqm4mv1_graphormer_base`` on the ``ogbg-molhiv`` dataset
         --save-dir ./ckpts \
         --pretrained-model-name pcqm4mv1_graphormer_base \
         --flag-m 3 \
-        --flag-step-size 0.001 \
-        --flag-mag 0.001 \
-        --seed 1
+        --flag-step-size 0.01 \
+        --flag-mag 0 \
+        --seed 1 \
+        --pre-layernorm
 
 After fine-tuning, use ``graphormer/evaluate/evaluate.py`` to evaluate the performance of all checkpoints:
 
@@ -132,7 +133,8 @@ After fine-tuning, use ``graphormer/evaluate/evaluate.py`` to evaluate the perfo
         --save-dir ../../examples/property_prediction/ckpts/ \
         --split test \
         --metric auc \
-        --seed 1
+        --seed 1 \
+        --pre-layernorm
 
 
 Training a New Model
