@@ -32,6 +32,7 @@ class GraphormerGraphEncoderLayer(nn.Module):
         q_noise: float = 0.0,
         qn_block_size: int = 8,
         init_fn: Callable = None,
+        pre_layernorm: bool = False,
     ) -> None:
         super().__init__()
 
@@ -44,6 +45,7 @@ class GraphormerGraphEncoderLayer(nn.Module):
         self.attention_dropout = attention_dropout
         self.q_noise = q_noise
         self.qn_block_size = qn_block_size
+        self.pre_layernorm = pre_layernorm
 
         self.dropout_module = FairseqDropout(
             dropout, module_name=self.__class__.__name__
@@ -119,6 +121,8 @@ class GraphormerGraphEncoderLayer(nn.Module):
         """
         # x: T x B x C
         residual = x
+        if self.pre_layernorm:
+            x = self.self_attn_layer_norm(x)
         x, attn = self.self_attn(
             query=x,
             key=x,
@@ -130,13 +134,17 @@ class GraphormerGraphEncoderLayer(nn.Module):
         )
         x = self.dropout_module(x)
         x = residual + x
-        x = self.self_attn_layer_norm(x)
+        if not self.pre_layernorm:
+            x = self.self_attn_layer_norm(x)
 
         residual = x
+        if self.pre_layernorm:
+            x = self.final_layer_norm(x)
         x = self.activation_fn(self.fc1(x))
         x = self.activation_dropout_module(x)
         x = self.fc2(x)
         x = self.dropout_module(x)
         x = residual + x
-        x = self.final_layer_norm(x)
+        if not self.pre_layernorm:
+            x = self.final_layer_norm(x)
         return x, attn

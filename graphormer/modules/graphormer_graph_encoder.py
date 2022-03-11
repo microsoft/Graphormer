@@ -62,6 +62,7 @@ class GraphormerGraphEncoder(nn.Module):
         activation_dropout: float = 0.1,
         layerdrop: float = 0.0,
         encoder_normalize_before: bool = False,
+        pre_layernorm: bool = False,
         apply_graphormer_init: bool = False,
         activation_fn: str = "gelu",
         embed_scale: float = None,
@@ -119,6 +120,9 @@ class GraphormerGraphEncoder(nn.Module):
         else:
             self.emb_layer_norm = None
 
+        if pre_layernorm:
+            self.final_layer_norm = LayerNorm(self.embedding_dim, export=export)
+
         if self.layerdrop > 0.0:
             self.layers = LayerDropModuleList(p=self.layerdrop)
         else:
@@ -136,6 +140,7 @@ class GraphormerGraphEncoder(nn.Module):
                     export=export,
                     q_noise=q_noise,
                     qn_block_size=qn_block_size,
+                    pre_layernorm=pre_layernorm,
                 )
                 for _ in range(num_encoder_layers)
             ]
@@ -168,6 +173,7 @@ class GraphormerGraphEncoder(nn.Module):
         export,
         q_noise,
         qn_block_size,
+        pre_layernorm,
     ):
         return GraphormerGraphEncoderLayer(
             embedding_dim=embedding_dim,
@@ -180,6 +186,7 @@ class GraphormerGraphEncoder(nn.Module):
             export=export,
             q_noise=q_noise,
             qn_block_size=qn_block_size,
+            pre_layernorm=pre_layernorm,
         )
 
     def forward(
