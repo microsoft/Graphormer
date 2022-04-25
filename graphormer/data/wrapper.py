@@ -3,6 +3,7 @@
 
 import torch
 import numpy as np
+import torch_geometric
 from ogb.graphproppred import PygGraphPropPredDataset
 from ogb.lsc.pcqm4mv2_pyg import PygPCQM4Mv2Dataset
 from functools import lru_cache
