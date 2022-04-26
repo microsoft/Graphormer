@@ -69,13 +69,30 @@ class GraphormerDataset:
         train_idx = None,
         valid_idx = None,
         test_idx = None,
+        max_dist = 5
+        algo_name = "bfs_numba"
     ):
         super().__init__()
         if dataset is not None:
             if dataset_source == "dgl":
-                self.dataset = GraphormerDGLDataset(dataset, seed=seed, train_idx=train_idx, valid_idx=valid_idx, test_idx=test_idx)
+                self.dataset = GraphormerDGLDataset(
+                    dataset,
+                    seed=seed,
+                    train_idx=train_idx,
+                    valid_idx=valid_idx,
+                    test_idx=test_idx,
+                    max_dist=max_dist,
+                    algo_name=algo_name
+                )
             elif dataset_source == "pyg":
-                self.dataset = GraphormerPYGDataset(dataset, train_idx=train_idx, valid_idx=valid_idx, test_idx=test_idx)
+                self.dataset = GraphormerPYGDataset(
+                    dataset,
+                    train_idx=train_idx,
+                    valid_idx=valid_idx,
+                    test_idx=test_idx,
+                    max_dist=max_dist
+                    algo_name=algo_name
+                )
             else:
                 raise ValueError("customized dataset can only have source pyg or dgl")
         elif dataset_source == "dgl":

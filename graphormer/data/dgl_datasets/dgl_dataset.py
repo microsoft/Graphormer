@@ -14,6 +14,7 @@ from typing import Optional, Tuple
 
 from ..wrapper import convert_to_single_emb
 from .. import algos
+from ..algos_numba import bfs_numba_spatial_pos_and_edge_input
 from copy import copy
 
 
@@ -24,8 +25,12 @@ class GraphormerDGLDataset(Dataset):
         train_idx=None,
         valid_idx=None,
         test_idx=None,
+        max_dist=5,
+        algo_name="bfs_numba"
     ):
         self.dataset = dataset
+        self.max_dist = max_dist
+        self.algo_name = algo_name
         num_data = len(self.dataset)
         self.seed = seed
         if train_idx is None:
@@ -104,13 +109,21 @@ class GraphormerDGLDataset(Dataset):
         )
 
     def __preprocess_dgl_graph(
-        self, graph_data: DGLGraph, y: torch.Tensor, idx: int
+        self, graph_data: DGLGraph, y: torch.Tensor, idx: int,
+        algo_name="bfs_numba", max_dist=5
     ) -> PYGGraph:
         if not graph_data.is_homogeneous:
             raise ValueError(
                 "Heterogeneous DGLGraph is found. Only homogeneous graph is supported."
             )
         N = graph_data.num_nodes()
+
+        if self.algo_name == "bfs_numba":
+            process_algo = bfs_numba_spatial_pos_and_edge_input
+        elif self.algo_name == "bfs_cython":
+            process_algo = algos.bfs_spatial_pos_and_edge_input
+        elif self.algo_name == "floyd":
+            process_algo = algos.fw_spatial_pos_and_edge_input
 
         (
             node_int_feature,
@@ -126,10 +139,9 @@ class GraphormerDGLDataset(Dataset):
             edge_index[0].long(), edge_index[1].long()
         ] = convert_to_single_emb(edge_int_feature)
         dense_adj = graph_data.adj().to_dense().type(torch.int)
-        shortest_path_result, path = algos.floyd_warshall(dense_adj.numpy())
-        max_dist = np.amax(shortest_path_result)
-        edge_input = algos.gen_edge_input(max_dist, path, attn_edge_type.numpy())
-        spatial_pos = torch.from_numpy((shortest_path_result)).long()
+
+        spatial_pos, edge_input = process_algo(
+            dense_adj.numpy().astype("long"), attn_edge_type, self.max_dist)
         attn_bias = torch.zeros([N + 1, N + 1], dtype=torch.float)  # with graph token
 
         pyg_graph = PYGGraph()
@@ -137,7 +149,7 @@ class GraphormerDGLDataset(Dataset):
         pyg_graph.adj = dense_adj
         pyg_graph.attn_bias = attn_bias
         pyg_graph.attn_edge_type = attn_edge_type
-        pyg_graph.spatial_pos = spatial_pos
+        pyg_graph.spatial_pos = torch.from_numpy(spatial_pos).long()
         pyg_graph.in_degree = dense_adj.long().sum(dim=1).view(-1)
         pyg_graph.out_degree = pyg_graph.in_degree
         pyg_graph.edge_input = torch.from_numpy(edge_input).long()

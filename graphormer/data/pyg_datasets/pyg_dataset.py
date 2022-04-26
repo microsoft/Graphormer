@@ -25,8 +25,12 @@ class GraphormerPYGDataset(Dataset):
         train_set=None,
         valid_set=None,
         test_set=None,
+        max_dist=5,
+        algo_name="bfs_numba"
     ):
         self.dataset = dataset
+        self.algo_name = algo_name
+        self.max_dist = max_dist
         if self.dataset is not None:
             self.num_data = len(self.dataset)
         self.seed = seed
@@ -98,7 +102,11 @@ class GraphormerPYGDataset(Dataset):
             item = self.dataset[idx]
             item.idx = idx
             item.y = item.y.reshape(-1)
-            return preprocess_item(item)
+            return preprocess_item(
+                item,
+                algo_name=self.algo_name,
+                max_dist=self.max_dist
+            )
         else:
             raise TypeError("index to a GraphormerPYGDataset can only be an integer.")
 
