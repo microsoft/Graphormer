@@ -15,7 +15,7 @@ def floyd_warshall(adjacency_matrix):
     adj_mat_copy = adjacency_matrix.astype(long, order='C', casting='safe', copy=True)
     assert adj_mat_copy.flags['C_CONTIGUOUS']
     cdef numpy.ndarray[long, ndim=2, mode='c'] M = adj_mat_copy
-    cdef numpy.ndarray[long, ndim=2, mode='c'] path = numpy.zeros([n, n], dtype=numpy.int64)
+    cdef numpy.ndarray[long, ndim=2, mode='c'] path = -1 * numpy.ones([n, n], dtype=numpy.int64)
 
     cdef unsigned int i, j, k
     cdef long M_ij, M_ik, cost_ikkj
@@ -56,7 +56,7 @@ def floyd_warshall(adjacency_matrix):
 
 def get_all_edges(path, i, j):
     cdef unsigned int k = path[i][j]
-    if k == 0:
+    if k == -1:
         return []
     else:
         return get_all_edges(path, i, k) + [k] + get_all_edges(path, k, j)
