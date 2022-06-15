@@ -55,7 +55,7 @@ def floyd_warshall(adjacency_matrix):
 
 
 def get_all_edges(path, i, j):
-    cdef unsigned int k = path[i][j]
+    cdef int k = path[i][j]
     if k == -1:
         return []
     else:
