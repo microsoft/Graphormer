@@ -188,6 +188,44 @@ class GraphormerGraphEncoder(nn.Module):
             qn_block_size=qn_block_size,
             pre_layernorm=pre_layernorm,
         )
+    
+    def init_extra_node_layers(self, args):
+        pass
+
+    def init_extra_bias_layers(self, args):
+        pass
+
+    def forward_extra_node_layers(self, batched_data, x):
+        """
+        input:
+            batched_data: dict
+            x: tensor, B x T x C (T = N + 1)
+        output:
+            x: tensor, B x T x C (T = N + 1)
+        """
+        return x
+
+    def forward_extra_bias_layers(self, batched_data, attn_bias):
+        """
+        attn_bias: B x H x T x T (T = N + 1)
+        input:
+            batched_data: dict
+            attn_bias: tensor, B x H x T x T (T = N + 1)
+        output:
+            attn_bias: tensor, B x H x T x T (T = N + 1)
+        """
+        return attn_bias
+    
+    def make_padding_mask(self, batched_data): 
+        # compute padding mask. This is needed for multi-head attention.
+        data_x = batched_data["x"]
+        n_graph, n_node = data_x.size()[:2]
+        padding_mask = (data_x[:, :, 0]).eq(0)  # B x N x 1
+        padding_mask_cls = torch.zeros(
+            n_graph, 1, device=padding_mask.device, dtype=padding_mask.dtype
+        )
+        padding_mask = torch.cat((padding_mask_cls, padding_mask), dim=1)
+        return padding_mask.contiguous()
 
     def forward(
         self,
@@ -196,26 +234,23 @@ class GraphormerGraphEncoder(nn.Module):
         last_state_only: bool = False,
         token_embeddings: Optional[torch.Tensor] = None,
         attn_mask: Optional[torch.Tensor] = None,
+        need_attn: bool = False,
     ) -> Tuple[torch.Tensor, torch.Tensor]:
-        is_tpu = False
-        # compute padding mask. This is needed for multi-head attention
-        data_x = batched_data["x"]
-        n_graph, n_node = data_x.size()[:2]
-        padding_mask = (data_x[:, :, 0]).eq(0)  # B x T x 1
-        padding_mask_cls = torch.zeros(
-            n_graph, 1, device=padding_mask.device, dtype=padding_mask.dtype
-        )
-        padding_mask = torch.cat((padding_mask_cls, padding_mask), dim=1)
-        # B x (T+1) x 1
+        # B x T x 1, T = N + 1
+        padding_mask = self.make_padding_mask(batched_data)
 
-        if token_embeddings is not None:
-            x = token_embeddings
-        else:
-            x = self.graph_node_feature(batched_data)
+        # node features -> B x T x C
+        x = self.graph_node_feature(batched_data)
+        # extra layers -> keep the same shape
+        x = self.forward_extra_node_layers(batched_data, x)
+
+        # attn bias -> B x H x T x T
+        attn_bias = self.graph_attn_bias(batched_data)
+        # extra layers -> keep the same shape
+        attn_bias = self.forward_extra_bias_layers(batched_data, attn_bias)
 
         if perturb is not None:
-            #ic(torch.mean(torch.abs(x[:, 1, :])))
-            #ic(torch.mean(torch.abs(perturb)))
+            # perturb: B x N x C
             x[:, 1:, :] += perturb
 
         # x: B x T x C
@@ -239,25 +274,32 @@ class GraphormerGraphEncoder(nn.Module):
         x = x.transpose(0, 1)
 
         inner_states = []
+        inner_attns = []
+
         if not last_state_only:
             inner_states.append(x)
 
         for layer in self.layers:
-            x, _ = layer(
+            x, attn = layer(
                 x,
                 self_attn_padding_mask=padding_mask,
                 self_attn_mask=attn_mask,
                 self_attn_bias=attn_bias,
+                need_weights=need_attn,
             )
             if not last_state_only:
                 inner_states.append(x)
+                if need_attn:
+                    inner_attns.append(attn)
 
-        graph_rep = x[0, :, :]
+        graph_rep = x[0, :, :]   # graph-level representation
 
         if last_state_only:
             inner_states = [x]
+            if need_attn:
+                inner_attns = [attn]
 
-        if self.traceable:
-            return torch.stack(inner_states), graph_rep
-        else:
+        if not need_attn:
             return inner_states, graph_rep
+        else:
+            return inner_states, graph_rep, inner_attns
