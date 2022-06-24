@@ -151,7 +151,7 @@ class GraphormerModel(FairseqEncoderModel):
     def forward(self, batched_data, **kwargs):
         return self.encoder(batched_data, **kwargs)
 
-# TODO: 还需要吗？
+
 class GraphormerEncoder(FairseqEncoder):
     def __init__(self, args):
         super().__init__(dictionary=None)

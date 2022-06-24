@@ -253,10 +253,6 @@ class GraphormerGraphEncoder(nn.Module):
             # perturb: B x N x C
             x[:, 1:, :] += perturb
 
-        # x: B x T x C
-
-        attn_bias = self.graph_attn_bias(batched_data)
-
         if self.embed_scale is not None:
             x = x * self.embed_scale
 
