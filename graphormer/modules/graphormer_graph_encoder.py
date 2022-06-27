@@ -43,45 +43,50 @@ def init_graphormer_params(module):
 
 
 class GraphormerGraphEncoder(nn.Module):
-    def __init__(
-        self,
-        num_atoms: int,
-        num_in_degree: int,
-        num_out_degree: int,
-        num_edges: int,
-        num_spatial: int,
-        num_edge_dis: int,
-        edge_type: str,
-        multi_hop_max_dist: int,
-        num_encoder_layers: int = 12,
-        embedding_dim: int = 768,
-        ffn_embedding_dim: int = 768,
-        num_attention_heads: int = 32,
-        dropout: float = 0.1,
-        attention_dropout: float = 0.1,
-        activation_dropout: float = 0.1,
-        layerdrop: float = 0.0,
-        encoder_normalize_before: bool = False,
-        pre_layernorm: bool = False,
-        apply_graphormer_init: bool = False,
-        activation_fn: str = "gelu",
-        embed_scale: float = None,
-        freeze_embeddings: bool = False,
-        n_trans_layers_to_freeze: int = 0,
-        export: bool = False,
-        traceable: bool = False,
-        q_noise: float = 0.0,
-        qn_block_size: int = 8,
-    ) -> None:
-
+    def __init__(self, args) -> None:
         super().__init__()
+
+        # for Graphormer
+        num_atoms = args.num_atoms
+        num_in_degree = args.num_in_degree
+        num_out_degree = args.num_out_degree
+        num_edges = args.num_edges
+        num_spatial = args.num_spatial
+        num_edge_dis = args.num_edge_dis
+        edge_type = args.edge_type
+        multi_hop_max_dist = args.multi_hop_max_dist
+        sandwich_norm = args.sandwich_norm
+        num_encoder_layers = args.encoder_layers
+        embedding_dim = args.encoder_embed_dim
+        ffn_embedding_dim = args.encoder_ffn_embed_dim
+        num_attention_heads = args.encoder_attention_heads
+
+        # Fine-tuning parameters
+        layer_scale = args.layer_scale
+        droppath_prob = args.droppath_prob
+
+        # Attention parameters
+        dropout = args.dropout
+        attention_dropout = args.attention_dropout
+        activation_dropout = args.act_dropout
+        encoder_normalize_before = args.encoder_normalize_before
+        apply_graphormer_init = args.apply_graphormer_init
+        activation_fn = args.activation_fn
+
+        # Disable original Dropout when using DropPath
+        if droppath_prob > 0.0:
+            dropout = attention_dropout = activation_dropout = 0.0
+
+        # stochastic depth decay rule (linearly increasing)
+        droppath_probs = [
+            x.item() for x in torch.linspace(0, droppath_prob, num_encoder_layers)
+        ]
+
         self.dropout_module = FairseqDropout(
             dropout, module_name=self.__class__.__name__
         )
-        self.layerdrop = layerdrop
         self.embedding_dim = embedding_dim
         self.apply_graphormer_init = apply_graphormer_init
-        self.traceable = traceable
 
         self.graph_node_feature = GraphNodeFeature(
             num_heads=num_attention_heads,
@@ -91,6 +96,7 @@ class GraphormerGraphEncoder(nn.Module):
             hidden_dim=embedding_dim,
             n_layers=num_encoder_layers,
         )
+        self.init_extra_node_layers(args)
 
         self.graph_attn_bias = GraphAttnBias(
             num_heads=num_attention_heads,
@@ -103,46 +109,29 @@ class GraphormerGraphEncoder(nn.Module):
             hidden_dim=embedding_dim,
             n_layers=num_encoder_layers,
         )
-
-        self.embed_scale = embed_scale
-
-        if q_noise > 0:
-            self.quant_noise = apply_quant_noise_(
-                nn.Linear(self.embedding_dim, self.embedding_dim, bias=False),
-                q_noise,
-                qn_block_size,
-            )
-        else:
-            self.quant_noise = None
+        self.init_extra_bias_layers(args)
 
         if encoder_normalize_before:
-            self.emb_layer_norm = LayerNorm(self.embedding_dim, export=export)
+            self.emb_layer_norm = LayerNorm(self.embedding_dim)
         else:
             self.emb_layer_norm = None
 
-        if pre_layernorm:
-            self.final_layer_norm = LayerNorm(self.embedding_dim, export=export)
-
-        if self.layerdrop > 0.0:
-            self.layers = LayerDropModuleList(p=self.layerdrop)
-        else:
-            self.layers = nn.ModuleList([])
+        self.layers = nn.ModuleList([])
         self.layers.extend(
             [
                 self.build_graphormer_graph_encoder_layer(
                     embedding_dim=self.embedding_dim,
                     ffn_embedding_dim=ffn_embedding_dim,
                     num_attention_heads=num_attention_heads,
+                    layer_scale=layer_scale,
+                    droppath=droppath_probs[i],
                     dropout=self.dropout_module.p,
                     attention_dropout=attention_dropout,
                     activation_dropout=activation_dropout,
                     activation_fn=activation_fn,
-                    export=export,
-                    q_noise=q_noise,
-                    qn_block_size=qn_block_size,
-                    pre_layernorm=pre_layernorm,
+                    sandwich_norm=sandwich_norm,
                 )
-                for _ in range(num_encoder_layers)
+                for i in range(num_encoder_layers)
             ]
         )
 
@@ -150,45 +139,32 @@ class GraphormerGraphEncoder(nn.Module):
         if self.apply_graphormer_init:
             self.apply(init_graphormer_params)
 
-        def freeze_module_params(m):
-            if m is not None:
-                for p in m.parameters():
-                    p.requires_grad = False
-
-        if freeze_embeddings:
-            raise NotImplementedError("Freezing embeddings is not implemented yet.")
-
-        for layer in range(n_trans_layers_to_freeze):
-            freeze_module_params(self.layers[layer])
-
     def build_graphormer_graph_encoder_layer(
         self,
         embedding_dim,
         ffn_embedding_dim,
         num_attention_heads,
+        layer_scale,
+        droppath,
         dropout,
         attention_dropout,
         activation_dropout,
         activation_fn,
-        export,
-        q_noise,
-        qn_block_size,
-        pre_layernorm,
+        sandwich_norm,
     ):
         return GraphormerGraphEncoderLayer(
             embedding_dim=embedding_dim,
             ffn_embedding_dim=ffn_embedding_dim,
             num_attention_heads=num_attention_heads,
+            layer_scale=layer_scale,
+            droppath=droppath,
             dropout=dropout,
             attention_dropout=attention_dropout,
             activation_dropout=activation_dropout,
             activation_fn=activation_fn,
-            export=export,
-            q_noise=q_noise,
-            qn_block_size=qn_block_size,
-            pre_layernorm=pre_layernorm,
+            sandwich_norm=sandwich_norm,
         )
-    
+
     def init_extra_node_layers(self, args):
         pass
 
@@ -215,9 +191,8 @@ class GraphormerGraphEncoder(nn.Module):
             attn_bias: tensor, B x H x T x T (T = N + 1)
         """
         return attn_bias
-    
-    def make_padding_mask(self, batched_data): 
-        # compute padding mask. This is needed for multi-head attention.
+
+    def make_padding_mask(self, batched_data):
         data_x = batched_data["x"]
         n_graph, n_node = data_x.size()[:2]
         padding_mask = (data_x[:, :, 0]).eq(0)  # B x N x 1
@@ -253,18 +228,10 @@ class GraphormerGraphEncoder(nn.Module):
             # perturb: B x N x C
             x[:, 1:, :] += perturb
 
-        if self.embed_scale is not None:
-            x = x * self.embed_scale
-
-        if self.quant_noise is not None:
-            x = self.quant_noise(x)
-
         if self.emb_layer_norm is not None:
             x = self.emb_layer_norm(x)
 
         x = self.dropout_module(x)
-
-        # account for padding while computing the representation
 
         # B x T x C -> T x B x C
         x = x.transpose(0, 1)
@@ -288,7 +255,7 @@ class GraphormerGraphEncoder(nn.Module):
                 if need_attn:
                     inner_attns.append(attn)
 
-        graph_rep = x[0, :, :]   # graph-level representation
+        graph_rep = x[0, :, :]
 
         if last_state_only:
             inner_states = [x]

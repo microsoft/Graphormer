@@ -135,6 +135,7 @@ ckpts
 examples/dataset
 examples/property_prediction/ckpts
 graphormer/data/pyg_datasets/datasets
+examples/property_prediction/datasets/pcqm4m-v2/
 #examples/property_prediction/dataset
 !examples/property_prediction/dataset/pcqm4m-v2/RELEASE_v1.txt
 !examples/property_prediction/dataset/pcqm4m_kddcup2021/RELEASE_v1.txt

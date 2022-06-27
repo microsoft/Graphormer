@@ -29,6 +29,12 @@ logger = logging.getLogger(__name__)
 
 from ..pretrain import load_pretrained_model
 
+from ..utils import (
+    graphormer_default_add_args,
+    guess_first_load,
+    upgrade_state_dict_named_from_pretrained,
+)
+
 
 @register_model("graphormer")
 class GraphormerModel(FairseqEncoderModel):
@@ -46,90 +52,7 @@ class GraphormerModel(FairseqEncoderModel):
 
     @staticmethod
     def add_args(parser):
-        """Add model-specific arguments to the parser."""
-        # Arguments related to dropout
-        parser.add_argument(
-            "--dropout", type=float, metavar="D", help="dropout probability"
-        )
-        parser.add_argument(
-            "--attention-dropout",
-            type=float,
-            metavar="D",
-            help="dropout probability for" " attention weights",
-        )
-        parser.add_argument(
-            "--act-dropout",
-            type=float,
-            metavar="D",
-            help="dropout probability after" " activation in FFN",
-        )
-
-        # Arguments related to hidden states and self-attention
-        parser.add_argument(
-            "--encoder-ffn-embed-dim",
-            type=int,
-            metavar="N",
-            help="encoder embedding dimension for FFN",
-        )
-        parser.add_argument(
-            "--encoder-layers", type=int, metavar="N", help="num encoder layers"
-        )
-        parser.add_argument(
-            "--encoder-attention-heads",
-            type=int,
-            metavar="N",
-            help="num encoder attention heads",
-        )
-
-        # Arguments related to input and output embeddings
-        parser.add_argument(
-            "--encoder-embed-dim",
-            type=int,
-            metavar="N",
-            help="encoder embedding dimension",
-        )
-        parser.add_argument(
-            "--share-encoder-input-output-embed",
-            action="store_true",
-            help="share encoder input" " and output embeddings",
-        )
-        parser.add_argument(
-            "--encoder-learned-pos",
-            action="store_true",
-            help="use learned positional embeddings in the encoder",
-        )
-        parser.add_argument(
-            "--no-token-positional-embeddings",
-            action="store_true",
-            help="if set, disables positional embeddings" " (outside self attention)",
-        )
-        parser.add_argument(
-            "--max-positions", type=int, help="number of positional embeddings to learn"
-        )
-
-        # Arguments related to parameter initialization
-        parser.add_argument(
-            "--apply-graphormer-init",
-            action="store_true",
-            help="use custom param initialization for Graphormer",
-        )
-
-        # misc params
-        parser.add_argument(
-            "--activation-fn",
-            choices=utils.get_available_activation_fns(),
-            help="activation function to use",
-        )
-        parser.add_argument(
-            "--encoder-normalize-before",
-            action="store_true",
-            help="apply layernorm before each encoder block",
-        )
-        parser.add_argument(
-            "--pre-layernorm",
-            action="store_true",
-            help="apply layernorm before self-attention and ffn. Without this, post layernorm will used",
-        )
+        graphormer_default_add_args(parser)
 
     def max_nodes(self):
         return self.encoder.max_nodes
@@ -157,29 +80,7 @@ class GraphormerEncoder(FairseqEncoder):
         super().__init__(dictionary=None)
         self.max_nodes = args.max_nodes
 
-        self.graph_encoder = GraphormerGraphEncoder(
-            # < for graphormer
-            num_atoms=args.num_atoms,
-            num_in_degree=args.num_in_degree,
-            num_out_degree=args.num_out_degree,
-            num_edges=args.num_edges,
-            num_spatial=args.num_spatial,
-            num_edge_dis=args.num_edge_dis,
-            edge_type=args.edge_type,
-            multi_hop_max_dist=args.multi_hop_max_dist,
-            # >
-            num_encoder_layers=args.encoder_layers,
-            embedding_dim=args.encoder_embed_dim,
-            ffn_embedding_dim=args.encoder_ffn_embed_dim,
-            num_attention_heads=args.encoder_attention_heads,
-            dropout=args.dropout,
-            attention_dropout=args.attention_dropout,
-            activation_dropout=args.act_dropout,
-            encoder_normalize_before=args.encoder_normalize_before,
-            pre_layernorm=args.pre_layernorm,
-            apply_graphormer_init=args.apply_graphormer_init,
-            activation_fn=args.activation_fn,
-        )
+        self.graph_encoder = GraphormerGraphEncoder(args)
 
         self.share_input_output_embed = args.share_encoder_input_output_embed
         self.embed_out = None

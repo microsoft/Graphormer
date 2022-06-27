@@ -8,8 +8,8 @@ fairseq-train \
 --user-dir ../../graphormer \
 --num-workers 16 \
 --ddp-backend=legacy_ddp \
---dataset-name pcqm4mv2 \
---dataset-source ogb \
+--dataset-name pcqm4mv2_pyg \
+--dataset-source pyg \
 --task graph_prediction \
 --criterion l1_loss \
 --arch graphormer_base \
@@ -21,4 +21,5 @@ fairseq-train \
 --batch-size 256 \
 --fp16 \
 --data-buffer-size 20 \
---save-dir ./ckpts
+#--save-dir ./ckpts
+--no-save True

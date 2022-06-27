@@ -5,9 +5,27 @@ from typing import Optional
 from torch_geometric.datasets import *
 from torch_geometric.data import Dataset
 from .pyg_dataset import GraphormerPYGDataset
-from .pcqv2_pyg import MyPCQv2PYG
+from .pcqv2_pyg import PCQv2PYG
 
 import torch.distributed as dist
+
+from vpack import breakpt
+
+
+class MyPCQv2PYG(PCQv2PYG):
+    def download(self):
+        if dist.is_initialized():
+            print("dist is initialized!")
+        if not dist.is_initialized() or dist.get_rank() == 0:
+            super(MyPCQv2PYG, self).download()
+        if dist.is_initialized():
+            dist.barrier()
+
+    def process(self):
+        if not dist.is_initialized() or dist.get_rank() == 0:
+            super(MyPCQv2PYG, self).process()
+        if dist.is_initialized():
+            dist.barrier()
 
 
 class MyQM7b(QM7b):

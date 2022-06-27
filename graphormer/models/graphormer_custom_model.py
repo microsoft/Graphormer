@@ -39,7 +39,7 @@ from .graphormer_encoder import GraphormerEncoder as GraphormerEncoderBase
 
 from ..utils import (
     graphormer_default_add_args,
-    guess_fisrt_load,
+    guess_first_load,
     upgrade_state_dict_named_from_pretrained,
 )
 
@@ -124,8 +124,7 @@ class GraphormerCustomModel(FairseqEncoderModel):
 
     def upgrade_state_dict_named(self, state_dict, name):
         named_parameters = {k: v for k, v in self.named_parameters()}
-        first_load = guess_fisrt_load(named_parameters, state_dict, name)
-
+        first_load = guess_first_load(named_parameters, state_dict, name)
         if first_load:
             msg = upgrade_state_dict_named_from_pretrained(
                 named_parameters, state_dict, name
