@@ -6,16 +6,29 @@ from torch_geometric.datasets import *
 from torch_geometric.data import Dataset
 from .pyg_dataset import GraphormerPYGDataset
 from .pcqv2_pyg import PCQv2PYG
+from .fsmol import FSmolPYG
 
 import torch.distributed as dist
 
 from vpack import breakpt
 
 
+class MyFSmolPYG(FSmolPYG):
+    def download(self):
+        if not dist.is_initialized() or dist.get_rank() == 0:
+            super(MyPCQv2PYG, self).download()
+        if dist.is_initialized():
+            dist.barrier()
+
+    def process(self):
+        if not dist.is_initialized() or dist.get_rank() == 0:
+            super(MyPCQv2PYG, self).process()
+        if dist.is_initialized():
+            dist.barrier()
+
+
 class MyPCQv2PYG(PCQv2PYG):
     def download(self):
-        if dist.is_initialized():
-            print("dist is initialized!")
         if not dist.is_initialized() or dist.get_rank() == 0:
             super(MyPCQv2PYG, self).download()
         if dist.is_initialized():
@@ -125,6 +138,11 @@ class PYGDatasetLookupTable:
             train_idx = idx_split["train"]
             valid_idx = idx_split["valid"]
             test_idx = idx_split["test-dev"]
+        elif name == "fsmol":
+            root = "datasets"
+            train_set = MyFSmolPYG(root=root, split="train")
+            valid_set = MyFSmolPYG(root=root, split="val")
+            test_set = MyFSmolPYG(root=root, split="test")
         else:
             raise ValueError(f"Unknown dataset name {name} for pyg source.")
         if train_set is not None:
