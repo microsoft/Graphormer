@@ -17,7 +17,7 @@ CUDA_VISIBLE_DEVICES=3 fairseq-train \
 --dataset-source ogb \
 --task graph_prediction_with_flag \
 --criterion binary_logloss_with_flag \
---arch graphormer_base \
+--arch graphormer_graphpred_base \
 --num-classes 1 \
 --attention-dropout 0.1 --act-dropout 0.1 --dropout 0.0 \
 --optimizer adam --adam-betas '(0.9, 0.999)' --adam-eps 1e-8 --clip-norm 5.0 --weight-decay 0.0 \
