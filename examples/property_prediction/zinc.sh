@@ -10,7 +10,7 @@ CUDA_VISIBLE_DEVICES=0 fairseq-train \
 --dataset-source pyg \
 --task graph_prediction \
 --criterion l1_loss \
---arch graphormer_slim \
+--arch graphormer_graphpred_slim \
 --num-classes 1 \
 --attention-dropout 0.1 --act-dropout 0.1 --dropout 0.0 \
 --optimizer adam --adam-betas '(0.9, 0.999)' --adam-eps 1e-8 --clip-norm 5.0 --weight-decay 0.01 \

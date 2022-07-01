@@ -25,6 +25,7 @@ class PredictLayer(nn.Module):
         return x
 
 
+# Defines a group of output layers. Output dimensions of each layer should be assigned in the list 'out_dims'.
 class PredictLayerGroup(nn.Module):
     def __init__(self, in_dim, out_dims, activation=None, sandwich_norm=False, n_layers=1):
         super().__init__()

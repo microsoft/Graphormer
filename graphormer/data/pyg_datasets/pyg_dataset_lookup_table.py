@@ -16,13 +16,13 @@ from vpack import breakpt
 class MyFSmolPYG(FSmolPYG):
     def download(self):
         if not dist.is_initialized() or dist.get_rank() == 0:
-            super(MyPCQv2PYG, self).download()
+            super(MyFSmolPYG, self).download()
         if dist.is_initialized():
             dist.barrier()
 
     def process(self):
         if not dist.is_initialized() or dist.get_rank() == 0:
-            super(MyPCQv2PYG, self).process()
+            super(MyFSmolPYG, self).process()
         if dist.is_initialized():
             dist.barrier()
 

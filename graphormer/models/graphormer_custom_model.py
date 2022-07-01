@@ -7,14 +7,8 @@
 # LICENSE file in the root directory of this source tree.
 
 """
-A demonstrative file to show users to define and use their customized graphormer model.
-You can define your own way to calculate the attention bias, or define your own prediction head,
-by overriding specific functions.
-
-Relation between classes:
-- GraphormerCustomModel
-  - GraphormerEncoder
-    - GraphormerGraphEncoder
+A demonstrative file to show how to define a customized graphormer model.
+You can define extra node layers/bias layers or define a predict layer group.
 """
 
 import logging

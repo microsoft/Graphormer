@@ -50,8 +50,7 @@ class GraphormerEncoder(FairseqEncoder):
             perturb=perturb,
         )
 
-        x = inner_states[-1].transpose(0, 1)
-
+        x = inner_states[-1].transpose(0, 1)   
         x = self.layer_norm(self.activation_fn(self.lm_head_transform_weight(x)))
         x = x + self.lm_output_learned_bias
 

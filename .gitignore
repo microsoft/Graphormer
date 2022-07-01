@@ -114,6 +114,13 @@ ENV/
 
 # data
 dataset/
+datasets/
+graphormer/data/pyg_datasets/datasets/
+examples/property_prediction/dataset/
+examples/property_prediction/datasets/
+graphormer/data/pyg_datasets/test.py
+graphormer/data/pyg_datasets/test.tar
+fs-mol/
 
 # reranking
 /examples/reranking/rerank_data
@@ -128,16 +135,14 @@ exps
 # Weights and Biases logs
 wandb/
 
-
 *.pyc
 *.log
 ckpts
-examples/dataset
 examples/property_prediction/ckpts
-graphormer/data/pyg_datasets/datasets
-examples/property_prediction/datasets/pcqm4m-v2/
-#examples/property_prediction/dataset
+
 !examples/property_prediction/dataset/pcqm4m-v2/RELEASE_v1.txt
 !examples/property_prediction/dataset/pcqm4m_kddcup2021/RELEASE_v1.txt
-graphormer/data/pyg_datasets/test.py
-graphormer/data/pyg_datasets/test.tar
+
+# for self-testing
+examples/property_prediction/pcqv2_pyg.sh
+examples/property_prediction/fs_mol.sh
