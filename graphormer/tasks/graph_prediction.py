@@ -212,7 +212,7 @@ class GraphPredictionTask(FairseqTask):
 
         if split == "train" and self.cfg.train_epoch_shuffle:
             dataset = EpochShuffleDataset(
-                dataset, size=len(dataset), seed=self.cfg.seed
+                dataset, num_samples=len(dataset), seed=self.cfg.seed
             )
 
         logger.info("Loaded {0} with #samples: {1}".format(split, len(dataset)))
