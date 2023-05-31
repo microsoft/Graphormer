@@ -89,7 +89,7 @@ conda create --name graphormer python=3.7
 conda activate graphormer
 # install requirements
 pip install rdkit-pypi cython
-pip install ogb==1.3.1 pytorch-lightning==1.3.0
+pip install ogb==1.3.1 pytorch-lightning==1.3.0 torchmetrics==0.7
 pip install torch==1.7.1+cu110 torchvision==0.8.2+cu110 -f https://download.pytorch.org/whl/torch_stable.html
 pip install torch-geometric==1.6.3 ogb==1.3.1 pytorch-lightning==1.3.1 tqdm torch-sparse==0.6.9 torch-scatter==2.0.6 -f https://pytorch-geometric.com/whl/torch-1.7.0+cu110.html
 ```
