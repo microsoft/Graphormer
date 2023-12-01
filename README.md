@@ -2,6 +2,8 @@
 
 Graphormer is a deep learning package that allows researchers and developers to train custom models for molecule modeling tasks. It aims to accelerate the research and application in AI for molecule science, such as material discovery, drug discovery, etc. [Project website](https://www.microsoft.com/en-us/research/project/graphormer/).
 
+<font size=7>Advanced pre-trained versions of Graphormer are available exclusively on [Azure Quantum Elements](https://quantum.microsoft.com/en-us/our-story/quantum-elements-overview).</font>
+
 ## Hiring
 Hiring is temporarily freezed and will be re-opened soon. Please stay tuned. 
 
