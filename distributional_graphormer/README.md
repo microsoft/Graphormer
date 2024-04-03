@@ -21,7 +21,7 @@ dig
 Each subdirectory contains datasets and checkpoints. Use the provided SAS token to download the files:
 
 ```bash
-SAS="?sv=2021-10-04&st=2023-09-21T01%3A54%3A55Z&se=2024-09-22T01%3A54%3A00Z&sr=c&sp=rl&sig=VbuPoVb0Rnm0Cl6VKjTY1K3RF0kNTSn40Dk2NvCU5Hw%3D"
+SAS="?sv=2021-10-04&st=2024-04-03T07%3A48%3A36Z&se=2025-04-04T07%3A48%3A00Z&sr=c&sp=rl&sig=TcaroWm0i9P2heueVCRbrUgTRX4SBbN%2BmpqlA3087JY%3D"
 ```
 
 ## Demo page
