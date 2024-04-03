@@ -1,0 +1,4 @@
+*.npy
+dataset/
+checkpoints/
+output/

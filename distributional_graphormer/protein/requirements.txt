@@ -1,0 +1,9 @@
+numpy
+lmdb
+click
+tqdm
+tabulate
+pandas
+tensorboard
+pyyaml
+scipy

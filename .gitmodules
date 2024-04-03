@@ -1,3 +1,6 @@
 [submodule "fairseq"]
 	path = fairseq
 	url = https://github.com/pytorch/fairseq
+[submodule "catalyst-fairseq"]
+	path = distributional_graphormer/catalyst-adsorption/fairseq
+	url = https://github.com/pytorch/fairseq
