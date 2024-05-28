@@ -1,0 +1,28 @@
+fairseq-train --user-dir ./graphormer --ddp-backend legacy_ddp --task graph_diffusion \
+    --criterion difussion_loss --arch graphormer_diff_base \
+    --data-path ./dataset/16sys_db \
+    --num-workers 1 \
+    --optimizer adam --adam-betas '(0.9, 0.98)' \
+    --lr 0 --weight-decay 1e-3 \
+    --clip-norm 10.0 \
+    --lr-scheduler polynomial_decay \
+    --max-epoch 1 \
+    --warmup-updates 1000 --total-num-update 10000 \
+    --batch-size 16 \
+    --train-subset 'placeholder' \
+    --valid-subset 'test_md' \
+    --validate-interval 1 \
+    --save-interval 5 \
+    --num-diffusion-timesteps 500 \
+    --diffusion-sampling 'ddpm' \
+    --ddim-steps 500 \
+    --diffusion-beta-schedule 'sigmoid' \
+    --diffusion-layer-add-time-emb \
+    --diffusion-layer-proj-time-emb \
+    --diffusion-beta-end 0.02 \
+    --ema-decay 0.9999 --store-ema --uses-ema --ema-fp32 \
+    --prior-distribution-std 1 \
+    --pairwise-loss \
+    --num-epsilon-estimator 1 \
+    --test-mode \
+    --finetune-from-model saved_checkpoints/checkpoint_prolig.pt
