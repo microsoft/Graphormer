@@ -5,7 +5,7 @@ Graphormer is a deep learning package that allows researchers and developers to 
 <font size=7>Advanced pre-trained versions of Graphormer are available exclusively on [Azure Quantum Elements](https://quantum.microsoft.com/en-us/our-story/quantum-elements-overview).</font>
 
 ## Hiring
-Hiring is temporarily freezed and will be re-opened soon. Please stay tuned. 
+Hiring is temporarily frozen and will be re-opened soon. Please stay tuned. 
 
 ~~We are hiring at all levels (including FTE researchers and interns)! If you are interested in working with us on AI for Molecule Science, please send your resume to <a href="mailto:shuz@microsoft.com" class="x-hidden-focus">shuz@microsoft.com</a>.~~
 
