@@ -29,7 +29,7 @@ class GraphPredictionL1Loss(FairseqCriterion):
             natoms = sample["net_input"]["batched_data"]["x"].shape[1]
 
         logits = model(**sample["net_input"])
-        logits = logits[:, 0, :]
+        #logits = logits[:, 0, :]  # B x C
         targets = model.get_targets(sample, [logits])
 
         loss = nn.L1Loss(reduction="sum")(logits, targets[: logits.size(0)])
