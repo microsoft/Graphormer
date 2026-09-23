@@ -114,6 +114,11 @@ class GraphPredictionConfig(FairseqDataclass):
         metadata={"help": "name of used pretrained model"},
     )
 
+    pretrained_model_path: str = field(
+        default="",
+        metadata={"help": "path to a local pretrained model checkpoint"},
+    )
+
     load_pretrained_model_output_layer: bool = field(
         default=False,
         metadata={"help": "whether to load the output layer of pretrained model"},

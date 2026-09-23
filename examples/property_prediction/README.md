@@ -46,6 +46,20 @@ Fine-tuning the pre-trained model on OGBG-MolHIV:
 bash hiv_pre.sh
 ```
 
+Pretrained weights can also be loaded from a local Fairseq checkpoint or a
+raw model state dictionary:
+
+```bash
+fairseq-train ... \
+    --pretrained-model-path /path/to/checkpoint.pt
+```
+
+`--pretrained-model-path` and `--pretrained-model-name` are mutually
+exclusive. Use `--load-pretrained-model-output-layer` when the local
+checkpoint's output layer should be retained. Only load checkpoints from
+trusted sources. For distributed jobs, the path must be readable by every
+worker.
+
 #### OGBG-MolHIV
 Method        | #params | test AUC (%)|
 --------------|---------|------------|
