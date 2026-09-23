@@ -148,7 +148,7 @@ class GraphormerDGLDataset(Dataset):
 
         return pyg_graph
 
-    def __getitem__(self, idx):
+    def get(self, idx):
         if isinstance(idx, int):
             if self.__indices__ is not None:
                 idx = self.__indices__[idx]
@@ -157,5 +157,11 @@ class GraphormerDGLDataset(Dataset):
         else:
             raise TypeError("index to a GraphormerDGLDataset can only be an integer.")
 
-    def __len__(self) -> int:
+    def len(self) -> int:
         return len(self.dataset) if self.__indices__ is None else len(self.__indices__)
+
+    def __getitem__(self, idx):
+        return self.get(idx)
+
+    def __len__(self) -> int:
+        return self.len()
