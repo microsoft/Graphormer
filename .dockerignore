@@ -1,0 +1,17 @@
+.git
+.venv
+**/__pycache__
+**/*.py[cod]
+**/*.so
+**/*.pt
+**/*.csv
+**/*.log
+**/checkpoints
+**/ckpts
+**/sweeps
+**/tensorboard
+**/test_results
+build
+dist
+exps
+wandb

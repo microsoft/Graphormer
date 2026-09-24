@@ -93,7 +93,7 @@ class GraphormerPYGDataset(Dataset):
         return dataset
 
     @lru_cache(maxsize=16)
-    def __getitem__(self, idx):
+    def get(self, idx):
         if isinstance(idx, int):
             item = self.dataset[idx]
             item.idx = idx
@@ -102,5 +102,11 @@ class GraphormerPYGDataset(Dataset):
         else:
             raise TypeError("index to a GraphormerPYGDataset can only be an integer.")
 
-    def __len__(self):
+    def len(self):
         return self.num_data
+
+    def __getitem__(self, idx):
+        return self.get(idx)
+
+    def __len__(self):
+        return self.len()

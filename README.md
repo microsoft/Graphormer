@@ -47,7 +47,57 @@ Next you may want to read:
 
 ## Requirements and Installation
 
-#### Setup with Conda
+### Containerized legacy environment
+
+Graphormer extends a pinned Fairseq revision and uses a legacy Python and
+PyTorch stack. The container is the recommended way to run this environment
+without changing packages in the host Python installation.
+
+Initialize the Fairseq submodule and build the image:
+
+```bash
+git submodule update --init --recursive
+docker build --tag graphormer:legacy .
+```
+
+Verify CPU imports and graph preprocessing:
+
+```bash
+docker run --rm graphormer:legacy \
+    python docker/verify_environment.py
+```
+
+GPU execution requires the NVIDIA Container Toolkit:
+
+```bash
+docker run --rm --gpus all graphormer:legacy \
+    python docker/verify_environment.py --require-cuda
+```
+
+Run an interactive shell and mount data or checkpoints separately from the
+repository:
+
+```bash
+docker run --rm --gpus all --interactive --tty \
+    --volume /path/to/data:/data \
+    graphormer:legacy
+```
+
+For single-host distributed training, provide an explicit process-group URL:
+
+```bash
+docker run --rm --gpus all graphormer:legacy \
+    fairseq-train ... \
+    --distributed-world-size 2 \
+    --distributed-init-method tcp://localhost:29500
+```
+
+The image intentionally pins Python 3.9, PyTorch 1.9.1, CUDA 11.1 user-space
+libraries, and pip 23.3.2. It is a reproducibility environment for the existing
+Fairseq-based code, not a claim of compatibility with current Python or
+PyTorch releases. Multi-node training is not covered by this setup.
+
+### Local installation
 
 ```
 bash install.sh
