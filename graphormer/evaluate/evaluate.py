@@ -28,7 +28,10 @@ def eval(args, use_pretrained, checkpoint_path=None, logger=None):
 
     # load checkpoint
     if use_pretrained:
-        model_state = load_pretrained_model(cfg.task.pretrained_model_name)
+        model_state = load_pretrained_model(
+            cfg.task.pretrained_model_name,
+            cfg.task.pretrained_model_path,
+        )
     else:
         model_state = torch.load(checkpoint_path)["model"]
     model.load_state_dict(
@@ -83,17 +86,22 @@ def eval(args, use_pretrained, checkpoint_path=None, logger=None):
     y_true = torch.Tensor(y_true)
 
     # evaluate pretrained models
-    if use_pretrained:
-        if cfg.task.pretrained_model_name == "pcqm4mv1_graphormer_base":
-            evaluator = ogb.lsc.PCQM4MEvaluator()
-            input_dict = {'y_pred': y_pred, 'y_true': y_true}
-            result_dict = evaluator.eval(input_dict)
-            logger.info(f'PCQM4Mv1Evaluator: {result_dict}')
-        elif cfg.task.pretrained_model_name == "pcqm4mv2_graphormer_base":
-            evaluator = ogb.lsc.PCQM4Mv2Evaluator()
-            input_dict = {'y_pred': y_pred, 'y_true': y_true}
-            result_dict = evaluator.eval(input_dict)
-            logger.info(f'PCQM4Mv2Evaluator: {result_dict}')
+    if (
+        use_pretrained
+        and cfg.task.pretrained_model_name == "pcqm4mv1_graphormer_base"
+    ):
+        evaluator = ogb.lsc.PCQM4MEvaluator()
+        input_dict = {'y_pred': y_pred, 'y_true': y_true}
+        result_dict = evaluator.eval(input_dict)
+        logger.info(f'PCQM4Mv1Evaluator: {result_dict}')
+    elif (
+        use_pretrained
+        and cfg.task.pretrained_model_name == "pcqm4mv2_graphormer_base"
+    ):
+        evaluator = ogb.lsc.PCQM4Mv2Evaluator()
+        input_dict = {'y_pred': y_pred, 'y_true': y_true}
+        result_dict = evaluator.eval(input_dict)
+        logger.info(f'PCQM4Mv2Evaluator: {result_dict}')
     else:
         if args.metric == "auc":
             auc = roc_auc_score(y_true, y_pred)
@@ -116,7 +124,7 @@ def main():
     )
     args = options.parse_args_and_arch(parser, modify_parser=None)
     logger = logging.getLogger(__name__)
-    if args.pretrained_model_name != "none":
+    if args.pretrained_model_name != "none" or args.pretrained_model_path:
         eval(args, True, logger=logger)
     elif hasattr(args, "save_dir"):
         for checkpoint_fname in os.listdir(args.save_dir):

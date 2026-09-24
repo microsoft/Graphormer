@@ -39,9 +39,16 @@ class GraphormerModel(FairseqEncoderModel):
         if getattr(args, "apply_graphormer_init", False):
             self.apply(init_graphormer_params)
         self.encoder_embed_dim = args.encoder_embed_dim
-        if args.pretrained_model_name != "none":
-            self.load_state_dict(load_pretrained_model(args.pretrained_model_name))
-            if not args.load_pretrained_model_output_layer:
+        pretrained_model_name = getattr(args, "pretrained_model_name", "none")
+        pretrained_model_path = getattr(args, "pretrained_model_path", "")
+        if pretrained_model_name != "none" or pretrained_model_path:
+            self.load_state_dict(
+                load_pretrained_model(
+                    pretrained_model_name,
+                    pretrained_model_path,
+                )
+            )
+            if not getattr(args, "load_pretrained_model_output_layer", False):
                 self.encoder.reset_output_layer_parameters()
 
     @staticmethod
@@ -278,9 +285,12 @@ def base_architecture(args):
 
 @register_model_architecture("graphormer", "graphormer_base")
 def graphormer_base_architecture(args):
-    if args.pretrained_model_name == "pcqm4mv1_graphormer_base" or \
-       args.pretrained_model_name == "pcqm4mv2_graphormer_base" or \
-       args.pretrained_model_name == "pcqm4mv1_graphormer_base_for_molhiv":
+    pretrained_model_name = getattr(args, "pretrained_model_name", "none")
+    if pretrained_model_name in {
+        "pcqm4mv1_graphormer_base",
+        "pcqm4mv2_graphormer_base",
+        "pcqm4mv1_graphormer_base_for_molhiv",
+    }:
         args.encoder_layers = 12
         args.encoder_attention_heads = 32
         args.encoder_ffn_embed_dim = 768
