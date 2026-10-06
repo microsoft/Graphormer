@@ -196,10 +196,6 @@ Dataset
 
    -  edge type in the graph
 
--  ``--edge-type``, type = str, default="multi_hop"
-
-   -  edge type in the graph
-
 -  ``--user-data-dir``, type = str, default=""
 
    -  path to the module of user-defined dataset
