@@ -1,0 +1,71 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "graphormer-redteam"
+version = "0.1.0"
+description = "Robustness benchmark for graph transformers against homology-class data poisoning"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [
+    {name = "Ankit Chetri", email = "[email protected]"},
+    {name = "Teerth Sharma", email = "[email protected]"},
+]
+keywords = [
+    "graph-neural-networks",
+    "graph-transformer",
+    "graphormer",
+    "robustness",
+    "adversarial",
+    "backdoor",
+    "topology",
+    "homology",
+    "betti-numbers",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    "torch>=2.0",
+    "numpy>=1.24",
+    "networkx>=3.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "ruff>=0.1.0",
+]
+
+[project.scripts]
+graphormer-redteam = "graphormer_redteam.cli:main"
+
+[project.urls]
+Repository = "https://github.com/<your-org>/graphormer-redteam"
+Issues = "https://github.com/<your-org>/graphormer-redteam/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["graphormer_redteam*"]
+exclude = ["tests*", "examples*", "docs*", "papers*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM", "RUF"]
+ignore = ["E501"]
