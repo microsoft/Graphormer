@@ -4,6 +4,7 @@ click
 tqdm
 tabulate
 pandas
-tensorboard
+protobuf==5.29.6
+tensorboard==2.12.0
 pyyaml
 scipy
