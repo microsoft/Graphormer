@@ -3,8 +3,8 @@ googledrivedownloader==0.4
 lmdb==2.3.0
 numpy==1.23.5
 ogb==1.3.2
-protobuf==3.20.3
+protobuf==5.29.6
 rdkit-pypi==2021.9.3
-tensorboard==2.11.2
-tensorboardX==2.4.1
+tensorboard==2.12.0
+tensorboardX==2.6.1
 torch-geometric==2.3.1

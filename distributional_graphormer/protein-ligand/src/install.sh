@@ -10,7 +10,7 @@ pip install lmdb==1.3.0
 pip install torch-scatter==2.0.9 -f https://pytorch-geometric.com/whl/torch-1.9.1+cu111.html
 pip install torch-sparse==0.6.12 -f https://pytorch-geometric.com/whl/torch-1.9.1+cu111.html
 pip install torch-geometric==2.0.4
-pip install tensorboardX==2.4.1
+pip install protobuf==5.29.6 tensorboardX==2.6.1
 pip install ogb==1.3.2
 pip install rdkit-pypi==2021.9.3
 pip install dgl==0.7.2 -f https://data.dgl.ai/wheels/repo.html

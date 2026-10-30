@@ -11,7 +11,7 @@ yes | pip install lmdb
 yes | pip install torch-scatter==2.0.9 -f https://pytorch-geometric.com/whl/torch-1.9.1+cu111.html
 yes | pip install torch-sparse==0.6.12 -f https://pytorch-geometric.com/whl/torch-1.9.1+cu111.html
 yes | pip install torch-geometric==1.7.2
-yes | pip install tensorboardX==2.4.1
+yes | pip install "numpy<2" protobuf==5.29.6 tensorboard==2.12.0 tensorboardX==2.6.1
 yes | pip install ogb==1.3.2
 yes | pip install rdkit-pypi==2021.9.3
 yes | pip install dgl==0.7.2 -f https://data.dgl.ai/wheels/repo.html
@@ -25,7 +25,6 @@ python setup.py build_ext --inplace
 yes | pip install icecream
 yes | pip install torchmetrics
 yes | pip install PyTDC
-conda install -c conda-forge tensorboard -y
 yes | pip install omegaconf
 yes | pip install Cython
 cd ..
